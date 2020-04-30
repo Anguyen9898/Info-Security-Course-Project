@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "811587254871",
+    "firebase_url": "https://info-security-course-pro-b0db0.firebaseio.com",
+    "project_id": "info-security-course-pro-b0db0",
+    "storage_bucket": "info-security-course-pro-b0db0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:811587254871:android:58a1e78a86f7acd873c112",
+        "android_client_info": {
+          "package_name": "com.anguyen.mymap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "811587254871-omsj9r2lfium9034d17kpmj2luv0ro2n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anguyen.mymap",
+            "certificate_hash": "362519c3c661ce5a0cf7ebc1a2b670cc7dd317e6"
+          }
+        },
+        {
+          "client_id": "811587254871-2seg6jpm52v59lhi3aq1lf394sp41d0q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnXD9QLOeKQRfDo6GoR9pzhi_PbDXbwR8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "811587254871-2seg6jpm52v59lhi3aq1lf394sp41d0q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">My Map</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!--Hint-->
+    <string name="hint_email">email</string>
+    <string name="hint_pass_confirm">confirm password</string>
+    <string name="hint_new_password">new password</string>
+    <string name="hint_password">password</string>
+    <string name="hint_username">username</string>
+    <string name="hint_full_name">full-name</string>
+    <string name="hint_phone">phone number</string>
+    <string name="hint_male">male</string>
+    <string name="hint_female">female</string>
+    <string name="hint_other">special</string>
+
+    <!--  Login & Register Button's Text  -->
+    <string name="btn_login">Login</string>
+    <string name="btn_register">Register</string>
+    <string name="btn_finish">Finish</string>
+    <string name="btn_back">Back</string>
+    <string name="btn_logout">Log Out</string>
+
+    <string name="btn_email_method">Sign in with Email</string>
+    <string name="btn_google_method">Sign in with Google</string>
+    <string name="btn_facebook_method">Sign in with Facebook</string>
+    <string name="btn_anonymous_method">Try app like a Guest</string>
+
+    <!-- Dialog Strings -->
+    <string name="general_positive_button">OK</string>
+    <string name="general_negative_button">Cancel</string>
+
+    <!-- Responding Messages -->
+    <string name="error_title">Oops</string>
+    <string name="error_message">Something went wrong! Please try again.</string>
+
+    <string name="internet_error_title">Internet Error!</string>
+    <string name="internet_error_message">Do you want to go to wifi setting?</string>
+
+    <string name="location_error_title">GPS is turn off!</string>
+    <string name="location_error_message">Please turn it on to continue using application!</string>
+
+    <!-- Menu Title -->
+    <string name="search_btn_menu_title">Search</string>
+    <string name="show_covid_menu_title">Show Covid-19 Areas</string>
+    <string name="show_friends_menu_title">Show Your Friends\'s Location</string>
+    <string name="home_menu_title">Home</string>
+    <string name="notification_menu_title">Notification</string>
+    <string name="message_menu_title">Message</string>
+    <string name="profile_menu_title">Profile</string>
+
+    <string name="invalid_email">This email is invalid! Please try another.</string>
+    <string name="invalid_password">Password must be more than or equal to 6 letters!</string>
+    <string name="invalid_username">This username is invalid! Please try another.</string>
+    <string name="invalid_phone_number">This phone number is invalid! Please try another.</string>
+    <string name="password_matching_error">Password do not match! Please try another.</string>
+    <string name="empty_field_required">All fields are required!!</string>
+
+    <string name="login_failed_title">Login Failed </string>
+    <string name="login_failed_message">Something went wrong! Please try again </string>
+    <string name="login_success">Login Successfully</string>
+
+    <string name="register_failed_title">Register Failed</string>
+    <string name="register_fail_message">Something went wrong! Please try again.</string>
+    <string name="register_success">Register Successfully</string>
+
+    <!-- Facebook String -->
+    <string name="facebook_app_id">541237316581533</string>
+    <string name="fb_login_protocol_scheme">fb541237316581533</string>
+
+</resources>
