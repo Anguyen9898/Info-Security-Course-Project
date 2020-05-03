@@ -3,6 +3,10 @@ package com.anguyen.mymap.commons
 import android.content.Context
 import android.location.Geocoder
 import android.location.Location
+import android.view.Gravity
+import com.mancj.slideup.SlideUp
+import com.mancj.slideup.SlideUpBuilder
+import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 
 fun generateLocationToAddress(from: Context, location: Location): String{

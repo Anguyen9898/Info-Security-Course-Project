@@ -10,20 +10,23 @@
     <string name="hint_username">username</string>
     <string name="hint_full_name">full-name</string>
     <string name="hint_phone">phone number</string>
-    <string name="hint_male">male</string>
-    <string name="hint_female">female</string>
-    <string name="hint_other">special</string>
+    <string name="hint_gender">gender</string>
 
-    <!--  Login & Register Button's Text  -->
+    <!--  Button's Text  -->
     <string name="btn_login">Login</string>
     <string name="btn_register">Register</string>
     <string name="btn_finish">Finish</string>
     <string name="btn_back">Back</string>
     <string name="btn_logout">Log Out</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_edit_profile">Edit your profile</string>
 
-    <string name="btn_email_method">Sign in with Email</string>
-    <string name="btn_google_method">Sign in with Google</string>
-    <string name="btn_facebook_method">Sign in with Facebook</string>
+    <string name="txt_edit_avatar"><u>Choose your profile avatar</u></string>
+    <string name="txt_skip"><u>Skip >></u></string>
+
+    <string name="btn_email_method">Continue with personal Email</string>
+    <string name="btn_google_method">Continue with Google</string>
     <string name="btn_anonymous_method">Try app like a Guest</string>
 
     <!-- Dialog Strings -->
@@ -67,5 +70,15 @@
     <!-- Facebook String -->
     <string name="facebook_app_id">541237316581533</string>
     <string name="fb_login_protocol_scheme">fb541237316581533</string>
+    <string name="google_logout_dialog_message">You\'re about to log out, Do you want to revoke your google account too?</string>
+    <string name="revoke_selector">Click me to make your decision</string>
+    <string name="revoke_option1">Yes, Please!</string>
+    <string name="revoke_option2">No, Keep me sign in!</string>
+    <string name="txt_id">Your ID:</string>
+
+    <string name="edt_profile_empty">Unknown</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

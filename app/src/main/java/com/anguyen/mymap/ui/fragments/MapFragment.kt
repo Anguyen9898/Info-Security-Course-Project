@@ -6,10 +6,9 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 
 import com.anguyen.mymap.R
@@ -22,7 +21,12 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import kotlinx.android.synthetic.main.fragment_map.*
 
 const val CAMERA_ZOOM_INDEX = 19f
 
@@ -30,6 +34,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, MapView {
 
     private lateinit var mMapPresenter: MapPresenter
     private var supportMapFragment: SupportMapFragment? = null
+
+    private var latLngSearchResult: Place? = null
+    private var isSearchingPlace = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,9 +60,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, MapView {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         initMapFragment()
 
-        val userType = activity?.intent?.getStringExtra(KEY_USER_TYPE)
+        Places.initialize(context!!, getString(R.string.google_maps_key))
+
+        val userType = this.arguments?.getString(KEY_USER_TYPE)
         mMapPresenter = MapPresenter(context!!, this, userType!!)
 
+        toolbar.onItemClick { toolbarItemClickedHandler(it) }
     }
 
     private fun initMapFragment(){
@@ -75,12 +85,43 @@ class MapFragment : Fragment(), OnMapReadyCallback, MapView {
         mMapPresenter.updateMapUI()
     }
 
+    private fun toolbarItemClickedHandler(menuItem: MenuItem){
+        when (menuItem.itemId) {
+            R.id.search_button -> {
+                val intent = Autocomplete.IntentBuilder(
+                    AutocompleteActivityMode.FULLSCREEN,
+                    listOf(Place.Field.NAME, Place.Field.LAT_LNG)
+                ).build(context!!)
+
+                startActivityForResult(intent, SEARCH_PLACE_REQUEST_CODE)
+            }
+        }
+    }
+
     override fun onResume() {
         getLocationPermissionGranted(context!!){
-            //Perform if Permission's granted
-            mMapPresenter.getLastKnownLocation()
+            if(isSearchingPlace and (latLngSearchResult != null)) {
+                moveToThisLocation(latLngSearchResult!!)
+            }else{
+                //Perform if Permission's granted
+                mMapPresenter.getLastKnownLocation()
+            }
+
         }
         super.onResume()
+    }
+
+    private fun moveToThisLocation(place: Place){
+        mMapPresenter.mMap?.addMarker(
+            MarkerOptions().position(place.latLng!!)
+                .title("You're at ${place.address}")
+        )
+        mMapPresenter.mMap?.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                place.latLng!!,
+                19f
+            )
+        )
     }
 
     override fun showGPSSettingUI() {
@@ -132,22 +173,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, MapView {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
             //Get Selected Place result from Main Activity
-             SEARCH_PLACE_REQUEST_CODE ->{
-                if(resultCode == Activity.RESULT_OK && data != null){
+             SEARCH_PLACE_REQUEST_CODE -> {
+                 if (resultCode == Activity.RESULT_OK && data != null) {
+                     latLngSearchResult = Autocomplete.getPlaceFromIntent(data)
+                     isSearchingPlace = true
+                     onResume()
 
-                    val place =  Autocomplete.getPlaceFromIntent(data)
+                 } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                     val status = Autocomplete.getStatusFromIntent(data!!)
 
-                    mMapPresenter.mMap?.addMarker(MarkerOptions().position(place.latLng!!)
-                        .title("You're at ${place.address}"))
-                    mMapPresenter.mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(place.latLng!!, 19f))
-
-                }
-            }
+                     Log.i("Get Place", status.statusMessage!!)
+                     showToastByString(context!!, status.statusMessage!!)
+                 }
+             }
         }
     }
 
     override fun fireBaseExceptionError(message: String) = showToastByString(context!!, message)
 
-    override fun internetError() = internetErrorDialog(context!!)
+    override fun internetError() = showInternetErrorDialog(context!!)
 
 }

@@ -26,7 +26,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2.2"
+            android:layout_weight="1.2"
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
@@ -41,42 +41,25 @@
                 android:drawableStart="@drawable/ic_email"
                 android:padding="10dp"
                 android:layout_marginTop="15dp"
-                android:id="@+id/btn_email_phone_method"/>
+                android:id="@+id/btn_email_phone_method"
+                android:textAllCaps="false" />
 
-<!--            <com.google.android.gms.common.SignInButton-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="@drawable/button_background"/>-->
-
-            <Button
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/btn_facebook_method"
                 android:layout_width="300dp"
+                android:layout_marginTop="15dp"
+                android:layout_height="500dp"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp" />
+
+            <com.google.android.gms.common.SignInButton
+                android:layout_width="310dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_background"
-                android:gravity="center"
-                android:text="@string/btn_google_method"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"
-                android:drawableStart="@drawable/google_logo"
-                android:padding="10dp"
+                android:id="@+id/btn_google_method"
                 android:layout_marginTop="15dp"
-                android:id="@+id/btn_google_method"/>
-
-            <LinearLayout
-                android:layout_width="300dp"
-                android:layout_height="50dp"
-                android:orientation="vertical"
-                android:layout_marginTop="15dp"
-                android:background="@color/com_facebook_blue"
-                android:gravity="center">
-
-                <com.facebook.login.widget.LoginButton
-                    android:id="@+id/btn_facebook_method"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:textSize="16sp"/>
-
-            </LinearLayout>
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
 
             <Button
                 android:layout_width="300dp"
@@ -86,10 +69,11 @@
                 android:text="@string/btn_anonymous_method"
                 android:textColor="@color/colorPrimaryDark"
                 android:textStyle="bold"
-                android:drawableStart="@drawable/google_logo"
+                android:drawableStart="@drawable/ic_person"
                 android:padding="10dp"
                 android:layout_marginTop="15dp"
-                android:id="@+id/btn_anonymous_method"/>
+                android:id="@+id/btn_anonymous_method"
+                android:textAllCaps="false"/>
 
         </LinearLayout>
 
@@ -100,7 +84,6 @@
         android:layout_height="match_parent"
         android:weightSum="2"
         android:orientation="vertical">
-<!--        android:visibility="invisible"-->
 
         <Space
             android:layout_width="match_parent"
@@ -110,10 +93,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2.2"
+            android:layout_weight="1.2"
             android:background="@drawable/dialog_view_background"
             android:orientation="vertical"
-            android:id="@+id/login_layout">
+            android:id="@+id/login_layout"
+            android:gravity="center_horizontal">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
@@ -182,33 +166,27 @@
 
                 <Button
                     android:id="@+id/btn_login"
-                    android:layout_width="match_parent"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/button_background"
                     android:text="@string/btn_login"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="italic" />
-
-<!--                <Button-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="@string/btn_register"-->
-<!--                    android:id="@+id/btn_jump_to_register"-->
-<!--                    android:layout_marginTop="15dp"-->
-<!--                    android:textColor="@color/colorPrimaryDark"-->
-<!--                    android:background="@drawable/button_background"-->
-<!--                    android:textStyle="italic"/>-->
+                    android:textStyle="italic"
+                    android:textAllCaps="false"
+                    android:layout_gravity="center"/>
 
                 <Button
-                    android:layout_width="match_parent"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:text="@string/btn_register"
                     android:id="@+id/btn_jump_to_register"
                     android:layout_marginTop="15dp"
                     android:textColor="@color/colorPrimaryDark"
                     android:background="@drawable/button_background"
-                    android:textStyle="italic"/>
+                    android:textStyle="italic"
+                    android:textAllCaps="false"
+                    android:layout_gravity="center" />
 
             </LinearLayout>
 

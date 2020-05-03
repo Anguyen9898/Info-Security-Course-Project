@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/layout_title"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_check"
+            android:layout_marginEnd="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/google_logout_dialog_message"
+            android:textSize="20sp"
+            android:textColor="@color/colorAccent"
+            android:id="@+id/txt_question" />
+
+    </LinearLayout>
+
+    <CheckedTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/revoke_selector"
+        android:checked="true"
+        android:checkMark="@drawable/ic_checked"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        android:id="@+id/txt_check"
+        android:layout_below="@id/layout_title" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/revoke_option1"
+        android:padding="10dp"
+        android:textStyle="italic"
+        android:textSize="16sp"
+        android:id="@+id/txt_detail"
+        android:layout_below="@id/txt_check"
+        android:gravity="end"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_logout"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="italic"
+        android:gravity="center"
+        android:id="@+id/btn_logout_confirm"
+        android:background="@drawable/text_view_background"
+        android:layout_below="@id/txt_detail"
+        android:textAllCaps="false"
+        android:layout_marginTop="10dp"/>
+
+</RelativeLayout>

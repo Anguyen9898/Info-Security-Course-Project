@@ -4,9 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.location.Location
 import android.util.Log
+import com.anguyen.mymap.commons.KEY_GUEST_USER
 import com.anguyen.mymap.commons.isGPSEnabled
 import com.anguyen.mymap.commons.isLocationPermissionGranted
-import com.anguyen.mymap.commons.locationErrorDialog
+import com.anguyen.mymap.commons.showLocationErrorDialog
 import com.anguyen.mymap.firebase_managers.authentication.FirebaseAuthManager
 import com.anguyen.mymap.firebase_managers.databases.FirebaseDataManager
 import com.anguyen.mymap.models.CoordinateDetail
@@ -28,7 +29,7 @@ class MapPresenter(
         .getFusedLocationProviderClient(mContext!!)
 
     private val authentication = FirebaseAuthManager(FirebaseAuth.getInstance(), mContext as Activity)
-    private val database= FirebaseDataManager(FirebaseDatabase.getInstance())
+    private val database = FirebaseDataManager(FirebaseDatabase.getInstance())
 
     fun updateMapUI() {
         if (mMap == null) {
@@ -66,7 +67,7 @@ class MapPresenter(
     fun getLastKnownLocation(){
 
         if(!isGPSEnabled(mContext!!)){
-            locationErrorDialog(mContext) { mMapView.showGPSSettingUI() }
+            showLocationErrorDialog(mContext) { mMapView.showGPSSettingUI() }
         }else{
 
             try{
@@ -76,11 +77,13 @@ class MapPresenter(
 
                         mMapView.showLocationOnMap(location)
 
-                        database.updateLocationFieldOnDatabase(
-                            authentication.getUserId(),
-                            mUserType,
-                            CoordinateDetail(location!!.latitude, location.longitude)
-                        )
+                        if(mUserType != KEY_GUEST_USER) { //Disable this function if user type is guest
+                            database.updateLocationFieldOnDatabase(
+                                authentication.getUserId(),
+                                mUserType,
+                                CoordinateDetail(location!!.latitude, location.longitude)
+                            )
+                        }
                     }
                 }
 

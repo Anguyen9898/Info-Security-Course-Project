@@ -1,7 +1,9 @@
 package com.anguyen.mymap.commons
 
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
@@ -11,6 +13,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.mancj.slideup.SlideUp
+import com.mancj.slideup.SlideUpBuilder
 
 inline fun View.onClick(crossinline onClickHandler: () -> Unit){
     setOnClickListener { onClickHandler() }
@@ -49,7 +53,8 @@ inline fun RadioGroup.onCheckedChangeListener(crossinline onItemClickHandler: ()
     setOnCheckedChangeListener{ _, _ ->  onItemClickHandler()}
 }
 
-fun Fragment.setup(from: FragmentActivity, id: Int) {
+fun Fragment.setup(from: FragmentActivity, id: Int, bundle: Bundle) {
+    this.arguments = bundle
     from.supportFragmentManager
         .beginTransaction()
         .replace(id, this)

@@ -53,7 +53,7 @@ class RegisterPresenter constructor (
 
     private fun register(){
 
-       if (mRegisterDetail?.isValid()!! && isPhoneNumberValid(mUserDetail!!.phoneNumber)){
+       if (mRegisterDetail?.isValid()!! && mUserDetail?.isValid()!!){
            try {
                authentication.registerNormalAccount(
                    mRegisterDetail.email,
@@ -64,7 +64,12 @@ class RegisterPresenter constructor (
                    if (isSuccessful) {
 
                        createUser(mRegisterDetail.username, mRegisterDetail.email)
-                       addUserInfo(mUserDetail.phoneNumber, mUserDetail.location)
+                       addUserInfo(
+                           mUserDetail.avatarUrl,
+                           mUserDetail.gender,
+                           mUserDetail.phoneNumber,
+                           mUserDetail.location
+                       )
 
                        mView?.onRegisterSuccess(mRegisterDetail)
 
@@ -85,14 +90,24 @@ class RegisterPresenter constructor (
         database.createNormalUser(id, userName, email)
     }
 
-    private fun addUserInfo(phone: String, location: CoordinateDetail?){
+    private fun addUserInfo(imgUrl: String, gender: String, phone: String, location: CoordinateDetail?){
         val id = authentication.getUserId()
-        database.addUserInformation(KEY_EMAIL_USER, id, phone, location)
+        database.addUserInformation(
+            KEY_EMAIL_USER,
+            id,
+            imgUrl,
+            gender,
+            phone,
+            location)
     }
 
     fun onUsernameChange(username: String){
         mRegisterDetail?.username = username
         mView?.showUsernameError(username.length)
+    }
+
+    fun onGenderChange(gender: String){
+        mUserDetail?.gender = gender
     }
 
     fun onEmailChange(email: String){

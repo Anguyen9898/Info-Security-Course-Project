@@ -56,7 +56,6 @@ class LoginPresenter constructor(
 
                     database.createGoogleAccountUser(
                         result,
-                        "",
                         CoordinateDetail(0.0, 0.0),
                         authentication
                     )
@@ -84,18 +83,20 @@ class LoginPresenter constructor(
 
             authentication.sinInWithCredential(
                 credential = credential,
-                onResult = { isSuccessful, result ->
+                onResult = { isSuccessful, authResult ->
+
+                    mView?.onLoginSuccess()
+
                     if(isSuccessful){
-                        mView?.onLoginSuccess()
                         database.createFacebookAccountUser(
-                            result,
-                            "",
+                            authResult,
                             CoordinateDetail(0.0, 0.0),
                             authentication
                         )
                     }else{
                         mView?.onLoginFail()
                     }
+
                 }
             )
 

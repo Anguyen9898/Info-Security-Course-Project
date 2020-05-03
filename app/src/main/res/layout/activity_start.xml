@@ -15,24 +15,4 @@
         android:layout_marginBottom="5dp"
         android:src="@drawable/main_logo"/>
 
-    <Button
-        android:id="@+id/btn_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/button_background"
-        android:text="@string/btn_login"
-        android:textColor="@color/colorPrimaryDark"
-        android:textStyle="italic" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_register"
-        android:id="@+id/btn_jump_to_register"
-        android:layout_marginTop="15dp"
-        android:textColor="@color/colorPrimaryDark"
-        android:background="@drawable/button_background"
-        android:textStyle="italic"/>
-
 </LinearLayout>

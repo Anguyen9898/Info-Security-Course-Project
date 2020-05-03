@@ -24,10 +24,12 @@ class FirebaseAuthManager constructor(
 
     private val googleSignInClient = GoogleSignIn.getClient(activity, googleOptions)
 
+    private val facebookManager = LoginManager.getInstance()
+
     fun signInByNormalAccount(email: String, password: String, onResult: (Boolean) -> Unit) {
         authentication.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener{
-                onResult(it.isSuccessful && it.isComplete)
+                onResult(it.isComplete and it.isSuccessful)
             }
     }
 
@@ -35,7 +37,7 @@ class FirebaseAuthManager constructor(
                             onResult: (Boolean, AuthResult) -> Unit){
         authentication.signInWithCredential(credential).apply {
             addOnCompleteListener {
-                onResult(it.isSuccessful && isComplete, it.result!!)
+                onResult(it.isComplete and it.isSuccessful, it.result!!)
             }
         }
     }
@@ -48,16 +50,22 @@ class FirebaseAuthManager constructor(
     fun signInByFaceBookAccount(mCallbackManager: CallbackManager,
                                 facebookCallBack: FacebookCallback<LoginResult>
     ){
-        LoginManager.getInstance().registerCallback(mCallbackManager, facebookCallBack)
+        facebookManager.registerCallback(mCallbackManager, facebookCallBack)
     }
 
     fun anonymousSignIn(onResult: (Boolean) -> Unit){
         authentication.signInAnonymously().addOnCompleteListener {
-            onResult(it.isSuccessful && it.isComplete)
+            onResult(it.isComplete and it.isSuccessful)
         }
     }
 
-    fun removeGuest() = authentication.currentUser?.delete()
+    fun removeGuest(onResult: (Boolean) -> Unit) {
+        authentication.currentUser
+            ?.delete()
+            ?.addOnCompleteListener {
+                onResult(it.isComplete and it.isSuccessful)
+            }
+    }
 
     fun registerNormalAccount(email: String, password: String, username: String, onResult: (Boolean) -> Unit) {
 
@@ -83,17 +91,21 @@ class FirebaseAuthManager constructor(
 
     //fun getUserName() = authentication.currentUser?.displayName
 
-    fun logout(onResult: () -> Unit) {
+    fun emailLogout(onResult: () -> Unit) {
         authentication.signOut()
         onResult()
     }
 
-    fun revokeGoogleAccount(onSuccess: () -> Unit){
+    fun revokeGoogleAccount(onResult: (Boolean)-> Unit){
         googleSignInClient.revokeAccess()
             .addOnCompleteListener {
-                if(it.isSuccessful) {
-                    onSuccess()
-                }
+                onResult(it.isComplete and it.isSuccessful)
             }
     }
+
+    fun facebookLogout(onResult: () -> Unit){
+        facebookManager.logOut()
+        onResult()
+    }
+
 }

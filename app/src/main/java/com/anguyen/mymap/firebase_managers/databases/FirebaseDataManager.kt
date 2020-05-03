@@ -1,14 +1,12 @@
 package com.anguyen.mymap.firebase_managers.databases
 
 
-import com.anguyen.mymap.commons.KEY_EMAIL_USER
-import com.anguyen.mymap.commons.KEY_FACEBOOK_USER
-import com.anguyen.mymap.commons.KEY_GOOGLE_USER
-import com.anguyen.mymap.commons.KEY_LOCATION
+import com.anguyen.mymap.commons.*
 import com.anguyen.mymap.firebase_managers.authentication.FirebaseAuthManager
 import com.anguyen.mymap.models.CoordinateDetail
 import com.anguyen.mymap.models.UserDetail
 import com.anguyen.mymap.models.UserInformationDetail
+import com.anguyen.mymap.models.UserRespondDetail
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.database.*
 
@@ -25,44 +23,21 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
 
     }
 
-    fun addUserInformation(userType: String, id: String, phoneNumber: String, coordinate: CoordinateDetail?){
+    fun addUserInformation(
+        userType: String,
+        id: String,
+        avatarUrl: String,
+        gender: String,
+        phoneNumber: String,
+        coordinate: CoordinateDetail?
+    ){
 
-        val userInfo = UserInformationDetail(phoneNumber, coordinate)
+        val userInfo = UserInformationDetail(userType, avatarUrl, gender, phoneNumber, coordinate)
 
         database.reference
             .child(userType)
             .child(id)
             .updateChildren(userInfo.toMap())
-
-    }
-
-    fun createFacebookAccountUser(account: AuthResult,
-                                  phoneNumber: String,
-                                  coordinate: CoordinateDetail?,
-                                  auth: FirebaseAuthManager){
-
-        database.reference
-            .child(KEY_FACEBOOK_USER)
-            .singleValueHandler(dataChangeHandler = { data ->
-
-                if(data.children.all{ it.child("email").value.toString() != account.user!!.email!! }){
-
-                    val user = UserDetail(account.user!!.email!!, account.user!!.displayName!!
-                        , account.user!!.email!!)
-
-                    val id = auth.getUserId()
-
-                    database.reference
-                        .child(KEY_FACEBOOK_USER)
-                        .child(id)
-                        .setValue(user)
-                        .addOnSuccessListener {
-                            addUserInformation(KEY_FACEBOOK_USER, id,  phoneNumber, coordinate)
-                        }
-
-                }
-            }, cancelHandler = {})
-
 
     }
 
@@ -98,12 +73,8 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
         })
     }
 
-    private fun stopValueListener(listener : ValueEventListener){
-        database.reference.removeEventListener(listener)
-    }
 
     fun createGoogleAccountUser(account: AuthResult,
-                                phoneNumber: String,
                                 coordinate: CoordinateDetail?,
                                 auth: FirebaseAuthManager){
 
@@ -111,23 +82,94 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
             .child(KEY_GOOGLE_USER)
             .singleValueHandler(dataChangeHandler = { data ->
 
-            if(data.children.all{ it.child("email").value.toString() != account.user!!.email!! }){
+                if(data.children.all{ it.child("id").value.toString() != auth.getUserId() }){
 
-                val user = UserDetail(account.user!!.email!!, account.user!!.displayName!!
-                    , account.user!!.email!!)
+                    val id = auth.getUserId()
 
-                val id = auth.getUserId()
+                    val user = UserDetail(id, account.user!!.displayName!!
+                        , account.user!!.email!!)
 
-                database.reference
-                    .child(KEY_GOOGLE_USER)
-                    .child(id)
-                    .setValue(user)
-                    .addOnSuccessListener {
-                        addUserInformation(KEY_GOOGLE_USER, id,  phoneNumber, coordinate)
-                    }
+                    database.reference
+                        .child(KEY_GOOGLE_USER)
+                        .child(id)
+                        .setValue(user)
+                        .addOnSuccessListener {
 
-            }
-        }, cancelHandler = {})
+                            val avatarUrl = if(isFieldEmpty(account.user?.photoUrl.toString())){
+                                DEFAULT_AVATAR_URL
+                            } else{
+                                account.user?.photoUrl.toString()
+                            }
+
+                            val phoneNumber = if(account.user?.phoneNumber == null){
+                                "" //return empty string
+                            } else{
+                                account.user?.phoneNumber.toString()
+                            }
+
+                            addUserInformation(
+                                KEY_GOOGLE_USER,
+                                id,
+                                avatarUrl,
+                                "",
+                                phoneNumber,
+                                coordinate
+                            )
+
+                        }
+
+                }
+            }, cancelHandler = {})
+
+    }
+
+    fun createFacebookAccountUser(account: AuthResult,
+                                  coordinate: CoordinateDetail?,
+                                  auth: FirebaseAuthManager){
+
+        database.reference
+            .child(KEY_FACEBOOK_USER)
+            .singleValueHandler(dataChangeHandler = { data ->
+
+                if(data.children.all{ it.child("id").value.toString() != auth.getUserId() }){
+
+                    val id = auth.getUserId()
+
+                    val user = UserDetail(id, account.user!!.displayName!!
+                        , account.user!!.email!!)
+
+                    database.reference
+                        .child(KEY_FACEBOOK_USER)
+                        .child(id)
+                        .setValue(user)
+                        .addOnSuccessListener {
+
+                            val avatarUrl = if(isFieldEmpty(account.user?.photoUrl.toString())){
+                                DEFAULT_AVATAR_URL
+                            } else{
+                                account.user?.photoUrl.toString()
+                            }
+
+                            val phoneNumber = if(account.user?.phoneNumber == null){
+                                "" //return empty string
+                            } else{
+                                account.user?.phoneNumber.toString()
+                            }
+
+                            addUserInformation(
+                                KEY_FACEBOOK_USER,
+                                id,
+                                avatarUrl,
+                                "",
+                                phoneNumber,
+                                coordinate
+                            )
+
+                        }
+
+                }
+            }, cancelHandler = {})
+
 
     }
 
@@ -136,8 +178,28 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
             .child(userType)
             .child(userId)
             .child(KEY_LOCATION)
-            .updateChildren(hashMapOf(Pair<String, Any?>(KEY_LOCATION, coordinate)))
+            .updateChildren(coordinate.toMap())
     }
 
+    fun getUserProfile(userType: String,
+                       auth: FirebaseAuthManager,
+                       onRespond: (UserRespondDetail?) -> Unit){
+        val id = auth.getUserId()
+
+        database.reference
+            .child(userType)
+            .child(id)
+            .singleValueHandler(
+                dataChangeHandler = { data ->
+                    val userRespond = data.getValue(UserRespondDetail::class.java)
+                    onRespond(userRespond)
+                },
+                cancelHandler = {}
+            )
+    }
+
+//    private fun stopValueListener(listener : ValueEventListener){
+//        database.reference.removeEventListener(listener)
+//    }
 
 }

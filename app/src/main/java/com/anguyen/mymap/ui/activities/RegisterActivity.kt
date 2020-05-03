@@ -3,23 +3,37 @@ package com.anguyen.mymap.ui.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
+import android.view.View
 import android.widget.EditText
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.anguyen.mymap.OnRecycleViewItemClickListener
 import com.anguyen.mymap.commons.changeColor
 import com.anguyen.mymap.commons.errorDialog
-import com.anguyen.mymap.commons.internetErrorDialog
+import com.anguyen.mymap.commons.showInternetErrorDialog
 import com.anguyen.mymap.R
+import com.anguyen.mymap.adapters.GenderAdapter
 import com.anguyen.mymap.commons.*
-import com.anguyen.mymap.models.CoordinateDetail
-import com.anguyen.mymap.models.RegisterDetail
-import com.anguyen.mymap.models.UserInformationDetail
+import com.anguyen.mymap.models.*
 import com.anguyen.mymap.presenter.RegisterPresenter
 import com.anguyen.mymap.ui.views.RegisterView
+import com.mancj.slideup.SlideUp
+import com.mancj.slideup.SlideUpBuilder
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.activity_register.*
 
-class RegisterActivity : AppCompatActivity(), RegisterView {
+class RegisterActivity : AppCompatActivity(), RegisterView, OnRecycleViewItemClickListener {
 
     private lateinit var mPresenter: RegisterPresenter
+
+    private var layoutAnimation: SlideUp? = null
+
+    private val mGenders = ArrayList<String>()
+    private lateinit var mAdapter: GenderAdapter
+
+    private lateinit var userType: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +48,7 @@ class RegisterActivity : AppCompatActivity(), RegisterView {
     private fun initPresenter(): RegisterPresenter {
         return RegisterPresenter(
             this, this,
+
             RegisterDetail(
                 edt_username.text.toString(),
                 edt_email.text.toString(),
@@ -42,6 +57,9 @@ class RegisterActivity : AppCompatActivity(), RegisterView {
             ),
 
             UserInformationDetail(
+                userType,
+                DEFAULT_AVATAR_URL,
+                edt_gender.text.toString(),
                 edt_phone_number.text.toString(),
                 CoordinateDetail()
             ),
@@ -55,8 +73,35 @@ class RegisterActivity : AppCompatActivity(), RegisterView {
             )
         )
     }
+    private fun initAnimationObj(): SlideUp? {
+        return SlideUpBuilder(recycle_hidden_gender_chooser)
+            .withStartState(SlideUp.State.HIDDEN)
+            .withHideSoftInputWhenDisplayed(true)
+            .withStartGravity(Gravity.BOTTOM)
+            .build()
+    }
+
+    private fun setupRecycleView(){
+        mGenders.addAll(genderDetail)
+        mAdapter = GenderAdapter(this, mGenders, this)
+        
+        recycle_hidden_gender_chooser.apply { 
+            layoutManager = LinearLayoutManager(
+                this@RegisterActivity,
+                RecyclerView.VERTICAL,
+                false)
+
+            adapter = mAdapter
+        }
+    }
 
     private fun initUI(){
+
+        userType =  this.intent.getStringExtra(KEY_USER_TYPE)
+
+        layoutAnimation = initAnimationObj()
+
+        setupRecycleView()
 
         mPresenter = initPresenter()
 
@@ -64,25 +109,33 @@ class RegisterActivity : AppCompatActivity(), RegisterView {
         edt_email.setText(intent.getStringExtra("account"))
 
         //Catch errors while text is changed
-        catchErrorOnTextChanged()
+        catchEventOnTextChanged()
 
         //On Button Clicked
         btn_register.onClick { mPresenter.onRegisterButtonClicked() }
 
         btn_back.onClick { onBackPressed() }
 
+        edt_gender.onClick { layoutAnimation?.show() }
+
     }
 
-    private fun catchErrorOnTextChanged(){
+    override fun onRecycleViewItemClickHandler(selectedItem: View?) {
+        edt_gender.setText((selectedItem as TextView).text.toString())
+        layoutAnimation?.toggle()
+    }
+
+    private fun catchEventOnTextChanged(){
 
         edt_username.onTextChanged { mPresenter.onUsernameChange(it) }
+
+        edt_gender.onTextChanged { mPresenter.onGenderChange(it) }
 
         edt_email.onTextChanged { mPresenter.onEmailChange(it) }
 
         edt_phone_number.onTextChanged { mPresenter.onPhoneNumberChange(it) }
 
         edt_new_password.onTextChanged { mPresenter.onPasswordChange(it)}
-        //edt_new_password.onFocusChanged { this.window.setSoftInputMode(it) }
 
         edt_pass_confirm.onTextChanged { mPresenter.onRepeatPasswordChange(it) }
 
@@ -90,7 +143,12 @@ class RegisterActivity : AppCompatActivity(), RegisterView {
 
     override fun onRegisterSuccess(registerDetail: RegisterDetail?) {
         showToastByResourceId(this, R.string.register_success)
-        startActivity(Intent(this, MainActivity::class.java))
+
+        //startActivity(Intent(this, AvatarSelectorActivity::class.java))
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra(KEY_USER_TYPE, userType)
+
+        startActivity(intent)
         this.finish()
     }
 
@@ -153,8 +211,16 @@ class RegisterActivity : AppCompatActivity(), RegisterView {
 
     override fun fireBaseExceptionError(message: String) = showToastByString(this, message)
 
-    override fun internetError() = internetErrorDialog(this)
+    override fun internetError() = showInternetErrorDialog(this)
 
+    override fun onBackPressed() {
+        if(layoutAnimation!!.isVisible){
+            layoutAnimation?.toggle()
+        }
+        else{
+            super.onBackPressed()
+        }
+    }
 
     override fun onDestroy() {
         clearFindViewByIdCache()

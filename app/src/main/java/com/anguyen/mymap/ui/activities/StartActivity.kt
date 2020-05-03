@@ -19,13 +19,13 @@ class StartActivity : AppCompatActivity() {
 
     private fun initUI(){
 
-        btn_login.onClick {
-            startActivity(Intent(this, LoginActivity    ::class.java))
-        }
-
-        btn_jump_to_register.onClick {
-            startActivity(Intent(this, RegisterActivity::class.java))
-        }
+//        btn_login.onClick {
+//            startActivity(Intent(this, LoginActivity    ::class.java))
+//        }
+//
+//        btn_jump_to_register.onClick {
+//            startActivity(Intent(this, RegisterActivity::class.java))
+//        }
 
     }
 }

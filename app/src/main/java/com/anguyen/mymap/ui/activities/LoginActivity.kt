@@ -6,7 +6,9 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import com.anguyen.mymap.R
 import com.anguyen.mymap.commons.*
 import com.anguyen.mymap.models.LoginDetail
@@ -28,8 +30,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
     private lateinit var mPresenter: LoginPresenter
     private val mCallbackManager = CallbackManager.Factory.create()
 
-    private var isDialogVisible = false
-    private lateinit var loginLayoutAnimation: SlideUp
+    private var loginLayoutAnimation: SlideUp? = null
 
     private var loginMethod = ""
 
@@ -55,6 +56,8 @@ class LoginActivity : AppCompatActivity(), LoginView {
 
     private fun initUI(){
 
+        customGoogleSignInButton()
+
         loginLayoutAnimation = initAnimationObj()!!
 
         mPresenter = initPresenter()
@@ -77,10 +80,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
             loginMethod = KEY_FACEBOOK_USER // Set user type
         }
 
-        btn_email_phone_method.onClick{
-            loginLayoutAnimation.show()
-            isDialogVisible = true
-        }
+        btn_email_phone_method.onClick{ loginLayoutAnimation?.show() }
 
         btn_login.onClick{
             mPresenter.onLoginButtonClicked()
@@ -88,14 +88,27 @@ class LoginActivity : AppCompatActivity(), LoginView {
         }
 
         btn_jump_to_register.onClick {
-            val mIntent = Intent(this, RegisterActivity::class.java)
-            mIntent.putExtra("account", edt_email.text.toString())
+            val intent = Intent(this, RegisterActivity::class.java)
 
-            startActivity(mIntent)
+            intent.putExtra("account", edt_email.text.toString())
+            intent.putExtra(KEY_USER_TYPE, KEY_EMAIL_USER)
+
+            startActivity(intent)
         }
 
-        btn_anonymous_method.onClick { mPresenter.onAnonymousLoginButtonClicked() }
+        btn_anonymous_method.onClick {
+            mPresenter.onAnonymousLoginButtonClicked()
+            loginMethod = KEY_GUEST_USER // Set user type
+        }
 
+    }
+
+    private fun customGoogleSignInButton(){
+        btn_google_method.children.forEach {
+            if(it is TextView){
+                it.text = getString(R.string.btn_google_method)
+            }
+        }
     }
 
     private fun initFacebookExtension(){
@@ -119,6 +132,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
     private fun updateUI(){
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra(KEY_USER_TYPE, loginMethod)
+
         startActivity(intent)
     }
 
@@ -224,12 +238,11 @@ class LoginActivity : AppCompatActivity(), LoginView {
 
     override fun fireBaseExceptionError(message: String) = showToastByString(this, message)
 
-    override fun internetError() = internetErrorDialog(this)
+    override fun internetError() = showInternetErrorDialog(this)
 
     override fun onBackPressed() {
-        if(isDialogVisible){
-            loginLayoutAnimation.toggle()
-            isDialogVisible = false
+        if(loginLayoutAnimation!!.isVisible){
+            loginLayoutAnimation?.toggle()
         }
         else{
             super.onBackPressed()
