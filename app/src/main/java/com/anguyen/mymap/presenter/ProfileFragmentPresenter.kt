@@ -17,7 +17,7 @@ class ProfileFragmentPresenter constructor(
     private val database = FirebaseDataManager(FirebaseDatabase.getInstance())
 
     fun onSettingProfile(){
-        database.getUserProfile(userType, authentication){
+        database.getUserProfile(userType, authentication.getUserId()){
             mView?.showUserInfo(it!!)
         }
     }

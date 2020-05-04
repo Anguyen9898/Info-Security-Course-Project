@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:id="@+id/toolbar"
-            app:title="@string/app_name"
+            app:title="@string/title_activity_maps"
             android:background="@color/colorAppbar"
             app:titleTextColor="@color/colorPrimaryDark"
             app:layout_scrollFlags="scroll|enterAlways|snap"

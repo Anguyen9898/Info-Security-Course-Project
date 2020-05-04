@@ -62,7 +62,6 @@ dependencies {
     implementation "com.github.mancj:SlideUp-Android:2.2.8"
 
     //Circle image
-    implementation 'de.hdodenhof:circleimageview:3.0.1'
     implementation 'com.mikhaellopez:circularimageview:4.2.0'
 
     implementation 'com.makeramen:roundedimageview:2.3.0'

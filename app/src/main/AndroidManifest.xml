@@ -11,9 +11,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MyMaterialTheme">
-        <activity android:name=".ui.activities.GoogleRevokeActivity"
-            android:theme="@style/Theme.MaterialComponents.Dialog.Alert"
-            android:excludeFromRecents="true"/>
 
         <activity android:name=".ui.activities.AvatarSelectorActivity"/>
 
@@ -23,16 +20,19 @@
 
         <activity android:name=".ui.activities.StartActivity" />
 
-        <activity
-            android:name=".ui.activities.LoginActivity"
+        <activity android:name=".ui.activities.LoginActivity"
             android:windowSoftInputMode="adjustResize">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".ui.activities.MainActivity" /> <!-- GoogleMap -->
+
+        <activity android:name=".ui.activities.MainActivity"/><!-- GoogleMap -->
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" /> <!-- Facebook -->

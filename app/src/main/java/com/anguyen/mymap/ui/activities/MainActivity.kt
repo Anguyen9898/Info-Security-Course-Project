@@ -9,7 +9,9 @@ import com.anguyen.mymap.commons.onItemSelected
 import com.anguyen.mymap.commons.setup
 import com.anguyen.mymap.presenter.MainPresenter
 import com.anguyen.mymap.ui.fragments.MapFragment
+import com.anguyen.mymap.ui.fragments.NotificationFragment
 import com.anguyen.mymap.ui.fragments.ProfileFragment
+import com.anguyen.mymap.ui.fragments.SearchFragment
 import com.anguyen.mymap.ui.views.MainView
 import com.google.android.libraries.places.api.Places
 import kotlinx.android.synthetic.main.activity_main.*
@@ -47,9 +49,9 @@ class MainActivity : AppCompatActivity(), MainView {
 
                 R.id.nav_home ->{ MapFragment() }
 
-                //R.id.nav_notify ->{ ProfileFragment() }
+                R.id.nav_notify ->{ NotificationFragment() }
 
-                //R.id.nav_messenger ->{ ProfileFragment() }
+                R.id.nav_search ->{ SearchFragment() }
 
                 else ->{ ProfileFragment() }
 

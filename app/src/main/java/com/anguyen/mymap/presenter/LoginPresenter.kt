@@ -54,10 +54,10 @@ class LoginPresenter constructor(
                 if(isSuccessful){
                     mView?.onLoginSuccess()
 
-                    database.createGoogleAccountUser(
+                    database.createGoogleUserData(
                         result,
                         CoordinateDetail(0.0, 0.0),
-                        authentication
+                        authentication.getUserId()
                     )
                 }else{
                     mView?.onLoginFail()
@@ -88,10 +88,10 @@ class LoginPresenter constructor(
                     mView?.onLoginSuccess()
 
                     if(isSuccessful){
-                        database.createFacebookAccountUser(
+                        database.createFacebookUserData(
                             authResult,
                             CoordinateDetail(0.0, 0.0),
-                            authentication
+                            authentication.getUserId()
                         )
                     }else{
                         mView?.onLoginFail()

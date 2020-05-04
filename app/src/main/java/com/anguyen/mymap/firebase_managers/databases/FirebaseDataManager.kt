@@ -3,10 +3,7 @@ package com.anguyen.mymap.firebase_managers.databases
 
 import com.anguyen.mymap.commons.*
 import com.anguyen.mymap.firebase_managers.authentication.FirebaseAuthManager
-import com.anguyen.mymap.models.CoordinateDetail
-import com.anguyen.mymap.models.UserDetail
-import com.anguyen.mymap.models.UserInformationDetail
-import com.anguyen.mymap.models.UserRespondDetail
+import com.anguyen.mymap.models.*
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.database.*
 
@@ -17,7 +14,7 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
         val user = UserDetail(id, userName, email)
 
         database.reference
-            .child(KEY_EMAIL_USER)
+            .child(KEY_USER)
             .child(id)
             .setValue(user)
 
@@ -35,7 +32,7 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
         val userInfo = UserInformationDetail(userType, avatarUrl, gender, phoneNumber, coordinate)
 
         database.reference
-            .child(userType)
+            .child(KEY_USER)
             .child(id)
             .updateChildren(userInfo.toMap())
 
@@ -74,23 +71,24 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
     }
 
 
-    fun createGoogleAccountUser(account: AuthResult,
-                                coordinate: CoordinateDetail?,
-                                auth: FirebaseAuthManager){
+    fun createGoogleUserData(account: AuthResult,
+                             coordinate: CoordinateDetail?,
+                             id: String){
 
         database.reference
-            .child(KEY_GOOGLE_USER)
+            .child(KEY_USER)
+            .child(id)
             .singleValueHandler(dataChangeHandler = { data ->
 
-                if(data.children.all{ it.child("id").value.toString() != auth.getUserId() }){
+                if(data.children.all{ it.child("id").value.toString() != id }){ //Only create data if user login first time
 
-                    val id = auth.getUserId()
+                    //val id = auth.getUserId() Change to string instead of adding auth param
 
                     val user = UserDetail(id, account.user!!.displayName!!
                         , account.user!!.email!!)
 
                     database.reference
-                        .child(KEY_GOOGLE_USER)
+                        .child(KEY_USER)
                         .child(id)
                         .setValue(user)
                         .addOnSuccessListener {
@@ -123,23 +121,23 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
 
     }
 
-    fun createFacebookAccountUser(account: AuthResult,
-                                  coordinate: CoordinateDetail?,
-                                  auth: FirebaseAuthManager){
+    fun createFacebookUserData(account: AuthResult,
+                               coordinate: CoordinateDetail?,
+                               id: String){
 
         database.reference
-            .child(KEY_FACEBOOK_USER)
+            .child(id)
             .singleValueHandler(dataChangeHandler = { data ->
 
-                if(data.children.all{ it.child("id").value.toString() != auth.getUserId() }){
+                if(data.children.all{ it.child("id").value.toString() != id }){ //Only create data if user login first time
 
-                    val id = auth.getUserId()
+                    //val id = auth.getUserId()
 
                     val user = UserDetail(id, account.user!!.displayName!!
                         , account.user!!.email!!)
 
                     database.reference
-                        .child(KEY_FACEBOOK_USER)
+                        .child(KEY_USER)
                         .child(id)
                         .setValue(user)
                         .addOnSuccessListener {
@@ -175,31 +173,62 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
 
     fun updateLocationFieldOnDatabase(userId: String, userType: String, coordinate: CoordinateDetail){
         database.reference
-            .child(userType)
+            .child(KEY_USER)
             .child(userId)
             .child(KEY_LOCATION)
             .updateChildren(coordinate.toMap())
     }
 
     fun getUserProfile(userType: String,
-                       auth: FirebaseAuthManager,
+                       id: String,
                        onRespond: (UserRespondDetail?) -> Unit){
-        val id = auth.getUserId()
+        //val id = auth.getUserId()
 
         database.reference
-            .child(userType)
+            .child(KEY_USER)
             .child(id)
             .singleValueHandler(
                 dataChangeHandler = { data ->
-                    val userRespond = data.getValue(UserRespondDetail::class.java)
+                    val userRespond = data.getValue(UserRespondDetail :: class.java)
                     onRespond(userRespond)
                 },
                 cancelHandler = {}
             )
     }
 
-//    private fun stopValueListener(listener : ValueEventListener){
-//        database.reference.removeEventListener(listener)
-//    }
+    fun checkUserFollowing(currentUser: String, onChecking: (UserSearchListDetail?) -> Unit){
+        database.reference
+            .child(KEY_USER)
+            .child(currentUser)
+            .child(KEY_FOLLOWING)
+            .valueEventHandler(
+                dataChangeHandler = { data ->
+                    if(data.exists()){
+                        data.children.forEach {
+                            val followings = it.getValue(UserSearchListDetail :: class.java)
+                            onChecking(followings)
+                        }
+                    }
+                },
+
+                cancelHandler = {}
+            )
+    }
+
+    fun setUserSearchingList(currentUser: String, onSetting: (UserSearchListDetail?) -> Unit){
+        database.reference
+            .child(KEY_USER)
+            .valueEventHandler(
+                dataChangeHandler = { data ->
+                    data.children.forEach {
+                        if(currentUser != it.child("id").value.toString()) {
+                            val userList = it.getValue(UserSearchListDetail::class.java)
+                            onSetting(userList)
+                        }
+                    }
+                },
+                cancelHandler = {}
+            )
+    }
 
 }

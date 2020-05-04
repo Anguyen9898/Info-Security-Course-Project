@@ -49,7 +49,7 @@
     <string name="show_friends_menu_title">Show Your Friends\'s Location</string>
     <string name="home_menu_title">Home</string>
     <string name="notification_menu_title">Notification</string>
-    <string name="message_menu_title">Message</string>
+    <string name="message_menu_title">Search</string>
     <string name="profile_menu_title">Profile</string>
 
     <string name="invalid_email">This email is invalid! Please try another.</string>

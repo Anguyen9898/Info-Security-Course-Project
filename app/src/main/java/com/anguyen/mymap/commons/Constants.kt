@@ -8,11 +8,14 @@ const val FACEBOOK_REQUEST_CODE = 2004
 
 const val SEARCH_PLACE_REQUEST_CODE = 10201
 
-const val KEY_USER_TYPE = "UserType"
+const val KEY_USER = "Users"
+const val KEY_USER_TYPE = "userType"
 const val KEY_EMAIL_USER = "Email Users"
 const val KEY_GOOGLE_USER = "Google Users"
 const val KEY_FACEBOOK_USER = "Facebook Users"
 const val KEY_GUEST_USER = "Guest"
+
+const val KEY_FOLLOWING = "following"
 
 const val KEY_LOCATION = "location"
 const val KEY_LATITUDE = "latitude"

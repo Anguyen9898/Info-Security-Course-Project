@@ -97,7 +97,7 @@ class RegisterActivity : AppCompatActivity(), RegisterView, OnRecycleViewItemCli
 
     private fun initUI(){
 
-        userType =  this.intent.getStringExtra(KEY_USER_TYPE)
+        userType =  this.intent.getStringExtra(KEY_USER_TYPE)!!
 
         layoutAnimation = initAnimationObj()
 
@@ -120,8 +120,8 @@ class RegisterActivity : AppCompatActivity(), RegisterView, OnRecycleViewItemCli
 
     }
 
-    override fun onRecycleViewItemClickHandler(selectedItem: View?) {
-        edt_gender.setText((selectedItem as TextView).text.toString())
+    override fun onRecycleViewItemClickHandler(view: View?) {
+        edt_gender.setText((view as TextView).text.toString())
         layoutAnimation?.toggle()
     }
 

@@ -30,6 +30,7 @@ data class UserInformationDetail constructor(
     fun toMap(): HashMap<String, Any?> {
         return hashMapOf(
             Pair("avatarUrl", avatarUrl),
+            Pair(KEY_USER_TYPE, userType),
             Pair("userTypeImgUrl", setUserTypeImgUrl()),
             Pair("gender", gender),
             Pair("phoneNumber", phoneNumber),
@@ -47,4 +48,10 @@ data class UserRespondDetail constructor(
     var gender: String = "",
     var email: String = "",
     var phoneNumber: String = ""
+)
+
+data class UserSearchListDetail constructor(
+    var avatarUrl: String = "",
+    var id: String = "",
+    var username: String = ""
 )

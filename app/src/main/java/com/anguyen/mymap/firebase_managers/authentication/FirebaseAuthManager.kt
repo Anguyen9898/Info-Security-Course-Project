@@ -87,6 +87,8 @@ class FirebaseAuthManager constructor(
 
     }
 
+    fun isLoginBefore() = authentication.currentUser != null
+
     fun getUserId() = authentication.currentUser?.uid!!
 
     //fun getUserName() = authentication.currentUser?.displayName
