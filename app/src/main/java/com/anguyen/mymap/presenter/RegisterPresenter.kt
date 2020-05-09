@@ -4,15 +4,18 @@ import android.app.Activity
 import android.content.Context
 import android.widget.EditText
 import com.anguyen.mymap.commons.*
-import com.anguyen.mymap.firebase_managers.authentication.FirebaseAuthManager
-import com.anguyen.mymap.firebase_managers.databases.FirebaseDataManager
+import com.anguyen.mymap.firebase_managers.FirebaseAuthenticationManager
+import com.anguyen.mymap.firebase_managers.FirebaseCloudStoreManager
+import com.anguyen.mymap.firebase_managers.FirebaseDataManager
 import com.anguyen.mymap.models.CoordinateDetail
+import com.anguyen.mymap.models.NotificationDetail
 import com.anguyen.mymap.models.RegisterDetail
 import com.anguyen.mymap.models.UserInformationDetail
 import com.anguyen.mymap.ui.views.RegisterView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 
 class RegisterPresenter constructor (
     private val mContext: Context,
@@ -22,14 +25,23 @@ class RegisterPresenter constructor (
     private var mEdtFields: List<EditText>
 ){
 
-    private val authentication = FirebaseAuthManager(FirebaseAuth.getInstance(), mContext as Activity)
-    private val database = FirebaseDataManager(FirebaseDatabase.getInstance())
+    private val authentication =
+        FirebaseAuthenticationManager(
+            FirebaseAuth.getInstance(),
+            mContext as Activity
+        )
+    private val database =
+        FirebaseDataManager(FirebaseDatabase.getInstance())
+
+    private val fireStore = FirebaseCloudStoreManager(FirebaseFirestore.getInstance())
 
     fun onRegisterButtonClicked() {
 
         when{
 
-            !isNetworkConnected(mContext)!! ->  mView?.internetError()
+            !isNetworkConnected(mContext)!! -> {
+                mView?.internetError()
+            }
 
             areAnyFieldsEmpty(
                 mRegisterDetail!!.username,
@@ -38,6 +50,7 @@ class RegisterPresenter constructor (
                 mRegisterDetail.repeatPassword,
                 mUserDetail!!.phoneNumber
             ) -> {
+
                 mEdtFields.forEach{
                     if(it.text.isEmpty()){
                         mView?.onEmptyFieldsError(it)
@@ -64,12 +77,17 @@ class RegisterPresenter constructor (
                    if (isSuccessful) {
 
                        createUser(mRegisterDetail.username, mRegisterDetail.email)
+
                        addUserInfo(
                            mUserDetail.avatarUrl,
+                           mUserDetail.userTypeImgUrl,
                            mUserDetail.gender,
                            mUserDetail.phoneNumber,
-                           mUserDetail.location
+                           mUserDetail.location,
+                           mUserDetail.notifications
                        )
+
+                       fireStore.createUserFireStoreData(authentication.getCurrentUserId(), mUserDetail)
 
                        mView?.onRegisterSuccess(mRegisterDetail)
 
@@ -86,19 +104,28 @@ class RegisterPresenter constructor (
     }
 
     private fun createUser(userName: String, email: String){
-        val id = authentication.getUserId()
+        val id = authentication.getCurrentUserId()
         database.createNormalUser(id, userName, email)
     }
 
-    private fun addUserInfo(imgUrl: String, gender: String, phone: String, location: CoordinateDetail?){
-        val id = authentication.getUserId()
+    private fun addUserInfo(imgUrl: String,
+                            userTypeImgUrl: String,
+                            gender: String,
+                            phone: String,
+                            location: CoordinateDetail?,
+                            notifications: HashMap<String, NotificationDetail?>
+    ){
+        val id = authentication.getCurrentUserId()
         database.addUserInformation(
             KEY_EMAIL_USER,
+            userTypeImgUrl,
             id,
             imgUrl,
             gender,
             phone,
-            location)
+            location,
+            notifications
+        )
     }
 
     fun onUsernameChange(username: String){

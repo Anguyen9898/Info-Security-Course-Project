@@ -60,7 +60,6 @@
                 android:layout_weight="1"
                 android:textSize="20sp"
                 android:textColor="#000"
-                android:text="sadsadsadsadadsad"
                 android:padding="3dp"
                 android:gravity="center"/>
 

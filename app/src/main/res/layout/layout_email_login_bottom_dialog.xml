@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/login_bottom_layout"
+    android:gravity="center_horizontal"
+    android:paddingBottom="50dp"
+    android:paddingTop="20dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:background="@drawable/circle_background"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?attr/actionBarSize"-->
+<!--        style="@style/MyMaterialTheme"-->
+<!--        android:id="@+id/appbar_top"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="?attr/actionBarSize"-->
+<!--            android:id="@+id/toolbar"-->
+<!--            app:title="@string/btn_email_method"-->
+<!--            android:background="@color/colorAppbar"-->
+<!--            app:titleTextColor="@color/colorPrimaryDark"-->
+<!--            app:layout_scrollFlags="scroll|enterAlways|snap" />-->
+
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_email"
+            android:padding="15dp"
+            android:id="@+id/edt_email"
+            android:inputType="textImeMultiLine|textEmailAddress"
+            android:layout_marginBottom="15dp"
+            android:textSize="16sp"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_password"
+            android:id="@+id/edt_password"
+            android:padding="15dp"
+            android:inputType="textImeMultiLine|textPassword"
+            android:textSize="16sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_login_password_count"
+                android:text="0"
+                android:textColor="@color/hintDefault" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_login_min_val_required"
+                android:text="/6+"
+                android:textColor="@color/hintDefault"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button_background"
+        android:text="@string/btn_login"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="italic"
+        android:textAllCaps="false"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_register"
+        android:id="@+id/btn_jump_to_register"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="@drawable/button_background"
+        android:textStyle="italic"
+        android:textAllCaps="false"
+        android:layout_gravity="center" />
+
+</LinearLayout>

@@ -10,31 +10,24 @@ data class UserDetail constructor(
 
 data class UserInformationDetail constructor(
     var userType: String = "",
+    var userTypeImgUrl: String = "",
     var avatarUrl: String = "",
     var gender: String = "",
     var phoneNumber: String = "",
-    var location: CoordinateDetail?
+    var location: CoordinateDetail? = null,
+    var notifications: HashMap<String, NotificationDetail?> = hashMapOf()
 ){
     fun isValid() = !areAnyFieldsEmpty(gender, phoneNumber) && isPhoneNumberValid(phoneNumber)
-
-    private fun setUserTypeImgUrl(): String{
-        return (when(userType){
-            KEY_EMAIL_USER -> EMAIL_USER_AVATAR_URL
-            KEY_GOOGLE_USER -> GOOGLE_USER_AVATAR_URL
-            KEY_FACEBOOK_USER -> FACEBOOK_USER_AVATAR_URL
-            KEY_GUEST_USER -> GUEST_USER_AVATAR_URL
-            else -> ""
-        })
-    }
 
     fun toMap(): HashMap<String, Any?> {
         return hashMapOf(
             Pair("avatarUrl", avatarUrl),
             Pair(KEY_USER_TYPE, userType),
-            Pair("userTypeImgUrl", setUserTypeImgUrl()),
+            Pair(KEY_USER_TYPE_IMG_URL, userTypeImgUrl),
             Pair("gender", gender),
             Pair("phoneNumber", phoneNumber),
-            Pair("location", location!!)
+            Pair("location", location!!),
+            Pair("notifications", notifications)
         )
     }
 
@@ -43,15 +36,18 @@ data class UserInformationDetail constructor(
 data class UserRespondDetail constructor(
     var id: String = "",
     var avatarUrl: String = "",
+    var userType: String = "",
     var userTypeImgUrl: String = "",
     var username: String = "",
     var gender: String = "",
     var email: String = "",
-    var phoneNumber: String = ""
+    var phoneNumber: String = "",
+    var location: CoordinateDetail? = CoordinateDetail(),
+    var notifications: HashMap<String, NotificationDetail?> = hashMapOf()
 )
 
-data class UserSearchListDetail constructor(
-    var avatarUrl: String = "",
-    var id: String = "",
-    var username: String = ""
-)
+//data class UserSearchListDetail constructor(
+//    var avatarUrl: String = "",
+//    var id: String = "",
+//    var username: String = ""
+//)

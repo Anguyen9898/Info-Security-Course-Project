@@ -1,28 +1,27 @@
-package com.anguyen.mymap.ui.fragments
+package com.anguyen.mymap.temporary_unused
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.anguyen.mymap.OnRecycleViewItemClickListener
 import com.anguyen.mymap.R
-import com.anguyen.mymap.adapters.SearchAdapter
+import com.anguyen.mymap.temporary_unused.search.OnSearchItemsClickListener
+import com.anguyen.mymap.temporary_unused.search.SearchingListAdapter
 import com.anguyen.mymap.commons.showInternetErrorDialog
+import com.anguyen.mymap.commons.showToastByResourceId
 import com.anguyen.mymap.commons.showToastByString
-import com.anguyen.mymap.models.UserSearchListDetail
-import com.anguyen.mymap.presenter.SearchPresenter
-import com.anguyen.mymap.ui.views.SearchView
+import com.anguyen.mymap.models.UserRespondDetail
 import kotlinx.android.synthetic.main.fragment_search.*
 
-class SearchFragment : Fragment(), SearchView, OnRecycleViewItemClickListener {
+class SearchFragment : Fragment(), SearchView,
+    OnSearchItemsClickListener {
 
     private lateinit var mPresenter: SearchPresenter
-    private lateinit var mAdapter: SearchAdapter
-    private var mUsers = ArrayList<UserSearchListDetail>()
+    private lateinit var mAdapter: SearchingListAdapter
+    private var mUsers = ArrayList<UserRespondDetail>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,13 +37,19 @@ class SearchFragment : Fragment(), SearchView, OnRecycleViewItemClickListener {
     }
 
     private fun initUI(){
-        mPresenter = SearchPresenter(context!!, this)
+        mPresenter =
+            SearchPresenter(context!!, this)
         mPresenter.setUserSearchingList()
     }
 
-    override fun setUserSearchingList(user: UserSearchListDetail?) {
+    override fun onSettingUserSearchingList(user: UserRespondDetail?) {
         mUsers.add(user!!)
-        mAdapter = SearchAdapter(context!!, mUsers, this)
+        mAdapter = SearchingListAdapter(
+            context!!,
+            mUsers,
+            this,
+            mPresenter
+        )
 
         recycle_users_list.apply {
             layoutManager = LinearLayoutManager(context!!, RecyclerView.VERTICAL, false)
@@ -52,10 +57,24 @@ class SearchFragment : Fragment(), SearchView, OnRecycleViewItemClickListener {
         }
     }
 
-    override fun onRecycleViewItemClickHandler(view: View?) {
-        if(view is Button){
-            view.background = activity?.getDrawable(R.drawable.button_request)
-        }
+    override fun onSendRequestClickHandler(receiverId: String, status: String?) {//Send Request
+        mPresenter.sendRequestHandler(receiverId, status)
+    }
+
+    override fun onWaitingClickHandler(status: String?) { //Cancel Request
+
+    }
+
+    override fun onFollowingClickHandler(status: String?) { //Revoke Following
+
+    }
+
+    override fun onSendRequestSuccessfully() {
+        showToastByResourceId(context!!, R.string.login_success)
+    }
+
+    override fun onSendRequestFailed() {
+        showToastByResourceId(context!!, R.string.general_failed_message)
     }
 
     override fun fireBaseExceptionError(message: String) = showToastByString(context!!, message)

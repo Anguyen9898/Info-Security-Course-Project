@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.provider.Settings
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.anguyen.mymap.R
 
 fun changeColor(field: List<TextView>, colorId: Int){
@@ -20,6 +21,21 @@ fun errorDialog(from: Context, titleId: Int, messageId: Int) {
         setTitle(context.getString(titleId))
 
         setMessage(context.getString(messageId))
+
+        setPositiveButton(from.getString(R.string.general_positive_button)){ dialog, _ -> dialog.dismiss() }
+
+    }.show()!!
+
+}
+
+
+fun errorDialog(from: Context, title: String, message: String) {
+
+    AlertDialog.Builder(from).apply {
+
+        setTitle(title)
+
+        setMessage(message)
 
         setPositiveButton(from.getString(R.string.general_positive_button)){ dialog, _ -> dialog.dismiss() }
 
@@ -59,6 +75,24 @@ fun showLocationErrorDialog(from: Context, confirmFunction: ()-> Unit) {
         R.string.location_error_message,
         confirmFunction
     )
+}
+
+fun showDevelopingFeatureWarning(from: Context, onDialogShowing: (DialogInterface) -> Unit){
+    AlertDialog.Builder(from).apply {
+
+        setTitle(context.getString(R.string.developing_feature_title))
+
+        setMessage(context.getString(R.string.developing_feature_content))
+
+        setPositiveButton(from.getString(R.string.general_positive_button)){ dialog, _ ->
+            onDialogShowing(dialog)
+        }
+
+    }.show()!!
+}
+
+fun showFirebaseError(from: Context, exMessage: String){
+    errorDialog(from, "Firebase Exception!", exMessage)
 }
 
 //fun errorDialog(from: Context){

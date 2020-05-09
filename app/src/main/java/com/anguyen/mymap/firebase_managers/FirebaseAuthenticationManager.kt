@@ -1,6 +1,8 @@
-package com.anguyen.mymap.firebase_managers.authentication
+package com.anguyen.mymap.firebase_managers
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import com.anguyen.mymap.R
 import com.anguyen.mymap.commons.GOOGLE_REQUEST_CODE
 import com.facebook.CallbackManager
@@ -8,12 +10,13 @@ import com.facebook.FacebookCallback
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.*
 
-class FirebaseAuthManager constructor(
+class FirebaseAuthenticationManager constructor(
     private val authentication: FirebaseAuth,
-    private val activity: Activity
+    activity: Activity
 ) {
 
     private val googleOptions = GoogleSignInOptions
@@ -34,17 +37,22 @@ class FirebaseAuthManager constructor(
     }
 
     fun sinInWithCredential(credential: AuthCredential,
-                            onResult: (Boolean, AuthResult) -> Unit){
-        authentication.signInWithCredential(credential).apply {
-            addOnCompleteListener {
-                onResult(it.isComplete and it.isSuccessful, it.result!!)
+                            onSuccess: (AuthResult) -> Unit,
+                            onError: (Exception) -> Unit
+    ){
+        authentication.signInWithCredential(credential)
+            .addOnCompleteListener {
+                if (it.isSuccessful and it.isComplete){
+                    onSuccess(it.result!!)
+                }else{
+                    onError(it.exception!!)
+                }
             }
-        }
     }
 
 
-    fun signInByGoogleAccount(){
-        activity.startActivityForResult(googleSignInClient.signInIntent, GOOGLE_REQUEST_CODE)
+    fun signInByGoogleAccount(openSignInDialog: (Intent) -> Unit){
+        openSignInDialog(googleSignInClient.signInIntent)
     }
 
     fun signInByFaceBookAccount(mCallbackManager: CallbackManager,
@@ -60,7 +68,7 @@ class FirebaseAuthManager constructor(
     }
 
     fun removeGuest(onResult: (Boolean) -> Unit) {
-        authentication.currentUser
+        getCurrentUser()
             ?.delete()
             ?.addOnCompleteListener {
                 onResult(it.isComplete and it.isSuccessful)
@@ -80,20 +88,28 @@ class FirebaseAuthManager constructor(
                             .build()
                     )
                     onResult(true)
-                }else
+                }else {
                     onResult(false)
+                }
 
             }
 
     }
 
-    fun isLoginBefore() = authentication.currentUser != null
+    /**
+     * This method to check if authentication-conflict happen
+     */
+//    fun checkConflictAccount(credential: AuthCredential){
+//        authentication.currentUser.em
+//    }
 
-    fun getUserId() = authentication.currentUser?.uid!!
+    fun getCurrentUser() = authentication.currentUser
+    fun isLoginBefore() = getCurrentUser() != null
+    fun getCurrentUserId() = authentication.currentUser?.uid!!
 
     //fun getUserName() = authentication.currentUser?.displayName
 
-    fun emailLogout(onResult: () -> Unit) {
+    fun firebaseLogout(onResult: () -> Unit) {
         authentication.signOut()
         onResult()
     }

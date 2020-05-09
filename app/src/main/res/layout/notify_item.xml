@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/dialog_view_background"
+    android:padding="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:id="@+id/layout_content"
+        android:background="@drawable/text_view_background">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:id="@+id/image_profile"
+            android:scaleType="fitCenter"
+            app:civ_border_color="#000"
+            app:civ_border="true"
+            app:civ_border_width="1dp"
+            android:layout_marginEnd="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_content"
+            android:layout_toEndOf="@id/image_profile"
+            android:text="dsadsadsadsadsad"
+            android:textColor="#000"
+            android:layout_marginTop="3dp"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_below="@id/layout_content"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/layout_button">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Refuse"
+            android:textColor="@color/colorFireBrick"
+            android:padding="5dp"
+            android:gravity="center"
+            android:background="@drawable/text_view_background"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Accept"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="5dp"
+            android:gravity="center"
+            android:background="@drawable/text_view_background"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

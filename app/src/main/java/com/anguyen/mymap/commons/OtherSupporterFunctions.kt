@@ -9,7 +9,7 @@ import com.mancj.slideup.SlideUpBuilder
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 
-fun generateLocationToAddress(from: Context, location: Location): String{
+fun convertLocationToAddress(from: Context, location: Location): String{
 
     val geoCoder = Geocoder(from, Locale.getDefault())
     val address = geoCoder.getFromLocation(

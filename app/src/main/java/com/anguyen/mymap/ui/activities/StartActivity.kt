@@ -6,9 +6,11 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import androidx.appcompat.app.AppCompatActivity
 import com.anguyen.mymap.R
+import com.anguyen.mymap.commons.KEY_USER_TYPE
 import com.anguyen.mymap.commons.onClick
 import com.anguyen.mymap.presenter.StartPresenter
 import com.anguyen.mymap.ui.views.StartView
+import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.activity_start.*
 
 
@@ -22,7 +24,7 @@ class StartActivity : AppCompatActivity(), StartView, Animation.AnimationListene
     }
 
     private fun initUI(){
-
+        updateUI()
         val fadeout = AlphaAnimation(1f, 1f)
         fadeout.duration = 2000
         fadeout.setAnimationListener(this)
@@ -43,12 +45,20 @@ class StartActivity : AppCompatActivity(), StartView, Animation.AnimationListene
         finish()
     }
 
-    override fun openMainUI() {
-        startActivity(Intent(this, MainActivity::class.java))
+    override fun openMainUI(userType: String?) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra(KEY_USER_TYPE, userType)
+
+        startActivity(intent)
     }
 
     override fun openLoginUI() {
         startActivity(Intent(this, LoginActivity::class.java))
+    }
+
+    override fun onDestroy() {
+        clearFindViewByIdCache()
+        super.onDestroy()
     }
 
 }

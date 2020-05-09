@@ -6,11 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.anguyen.mymap.R
+import com.anguyen.mymap.commons.initProgress
 import com.anguyen.mymap.commons.onClick
+import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.logout_revoke_dialog.*
 
 
-class RevokeDialogFragment(private val revokeDialogListener: RevokeDialogListener) : DialogFragment() {
+class RevokeDialogFragment(
+    private val revokeDialogListener: RevokeDialogListener,
+    private val progressDialog: KProgressHUD
+) : DialogFragment() {
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,6 +28,8 @@ class RevokeDialogFragment(private val revokeDialogListener: RevokeDialogListene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        progressDialog.dismiss()
 
         txt_check.onClick {
             txt_check.isChecked = !txt_check.isChecked
@@ -37,6 +45,7 @@ class RevokeDialogFragment(private val revokeDialogListener: RevokeDialogListene
         }
 
         btn_logout_confirm.onClick {
+            progressDialog.show()
             revokeDialogListener.onRevokeConfirmedListener(txt_check.isChecked)
         }
 

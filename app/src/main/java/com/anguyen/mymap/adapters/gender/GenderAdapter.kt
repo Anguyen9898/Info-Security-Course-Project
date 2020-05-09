@@ -1,24 +1,23 @@
-package com.anguyen.mymap.adapters
+package com.anguyen.mymap.adapters.gender
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.anguyen.mymap.OnRecycleViewItemClickListener
 import com.anguyen.mymap.R
 import com.anguyen.mymap.commons.onClick
-import kotlinx.android.synthetic.main.hidden_gender_chooser_item.view.*
+import kotlinx.android.synthetic.main.gender_bottom_dialog_item.view.*
 
 class GenderAdapter(private val mContext: Context,
                     private var mGenders: List<String>,
-                    private val onItemClickListener: OnRecycleViewItemClickListener
+                    private val onItemClickListener: OnGendersItemsClickListener
 ):RecyclerView.Adapter<GenderAdapter.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(mContext).inflate(
-                R.layout.hidden_gender_chooser_item,
+                R.layout.gender_bottom_dialog_item,
                 parent,
                 false
             )
@@ -29,15 +28,15 @@ class GenderAdapter(private val mContext: Context,
 
     override fun onBindViewHolder(holder: ViewHolder, i: Int) {
         val gender = mGenders[i]
-        holder.buttonItem.text = gender
+        holder.txtItem.text = gender
 
-        holder.buttonItem.onClick {
-            onItemClickListener.onRecycleViewItemClickHandler(holder.buttonItem)
+        holder.txtItem.onClick {
+            onItemClickListener.onRecycleViewItemClickHandler(holder.txtItem.text.toString(), i)
         }
     }
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val buttonItem = itemView.btn_gender_item!!
+        val txtItem = itemView.txt_gender_item!!
     }
 
 }

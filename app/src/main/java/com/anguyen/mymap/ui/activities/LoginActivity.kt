@@ -3,16 +3,13 @@ package com.anguyen.mymap.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import com.anguyen.mymap.R
 import com.anguyen.mymap.commons.*
-import com.anguyen.mymap.models.LoginDetail
 import com.anguyen.mymap.presenter.LoginPresenter
+import com.anguyen.mymap.ui.fragments.BottomDialogLoginFragment
 import com.anguyen.mymap.ui.views.LoginView
 import com.facebook.CallbackManager
 import com.facebook.FacebookException
@@ -20,8 +17,7 @@ import com.facebook.FacebookSdk
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
-import com.mancj.slideup.SlideUp
-import com.mancj.slideup.SlideUpBuilder
+import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -30,76 +26,73 @@ class LoginActivity : AppCompatActivity(), LoginView {
     private lateinit var mPresenter: LoginPresenter
     private val mCallbackManager = CallbackManager.Factory.create()
 
-    private var loginLayoutAnimation: SlideUp? = null
-
     private var loginMethod = ""
 
+    private lateinit var progressDialog: KProgressHUD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        progressDialog = initProgress(this)
+        progressDialog.show()
+
         initUI()
     }
 
-    /**
-     * Initialize Login Presenter
-     */
-    private fun initPresenter(): LoginPresenter {
-        return LoginPresenter(
-            this,
-            this,
-            LoginDetail(edt_email.text.toString(), edt_password.text.toString()),
-            listOf(edt_email, edt_password)
-        )
+    override fun onStart() {
+        progressDialog.dismiss()
+        super.onStart()
+    }
+
+    override fun onRestart() {
+        progressDialog.dismiss()
+        super.onRestart()
     }
 
     private fun initUI(){
 
         customGoogleSignInButton()
 
-        loginLayoutAnimation = initAnimationObj()!!
+        mPresenter = LoginPresenter(this, this)
 
-        mPresenter = initPresenter()
-
-        initFacebookExtension()
-
-        //Catch errors while text's changed
-        edt_email.onTextChanged { mPresenter.onEmailChange(it) }
-        edt_password.onTextChanged { mPresenter.onPasswordChange(it) }
+        FacebookSdk.sdkInitialize(applicationContext)
 
         //On Button Clicked
+        btn_email_method.onClick{
+            loginMethod = KEY_EMAIL_USER // Set user type
+            createBottomView()
+        }
+
         btn_google_method.onClick {
+            progressDialog.show()
+
             mPresenter.onLoginByGoogleButtonClicked()
             loginMethod = KEY_GOOGLE_USER // Set user type
         }
 
         btn_facebook_method.setReadPermissions("email", "public_profile")
         btn_facebook_method.onClick {
+            progressDialog.show()
+
             mPresenter.onLoginByFacebookButtonClicked(mCallbackManager)
             loginMethod = KEY_FACEBOOK_USER // Set user type
         }
 
-        btn_email_phone_method.onClick{ loginLayoutAnimation?.show() }
-
-        btn_login.onClick{
-            mPresenter.onLoginButtonClicked()
-            loginMethod = KEY_EMAIL_USER // Set user type
-        }
-
-        btn_jump_to_register.onClick {
-            val intent = Intent(this, RegisterActivity::class.java)
-
-            intent.putExtra("account", edt_email.text.toString())
-            intent.putExtra(KEY_USER_TYPE, KEY_EMAIL_USER)
-
-            startActivity(intent)
-        }
 
         btn_anonymous_method.onClick {
+            progressDialog.show()
+
             mPresenter.onAnonymousLoginButtonClicked()
             loginMethod = KEY_GUEST_USER // Set user type
         }
+
+    }
+
+    private fun createBottomView(){
+        val bottomDialog = BottomDialogLoginFragment(this)
+
+        bottomDialog.show(supportFragmentManager, "dialog")
 
     }
 
@@ -111,19 +104,9 @@ class LoginActivity : AppCompatActivity(), LoginView {
         }
     }
 
-    private fun initFacebookExtension(){
-        FacebookSdk.sdkInitialize(applicationContext)
-        //AppEventsLogger.activateApp(this)
-        LoginManager.getInstance().logInWithReadPermissions(this, listOf("public_profile"));
-    }
-
-    private fun initAnimationObj(): SlideUp? {
-        return SlideUpBuilder(login_layout)
-            .withStartState(SlideUp.State.HIDDEN)
-            .withStartGravity(Gravity.BOTTOM)
-            .withSlideFromOtherView(img_view_arrow)
-            .withSlideFromOtherView(login_layout)
-            .build()
+    override fun openGoogleSignInDialog(googleIntent: Intent) {
+        progressDialog.dismiss()
+        startActivityForResult(googleIntent, GOOGLE_REQUEST_CODE)
     }
 
     /**
@@ -137,6 +120,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        progressDialog.show()
 
         //Facebook Login Result
         mCallbackManager.onActivityResult(requestCode, resultCode, data)
@@ -166,6 +150,7 @@ class LoginActivity : AppCompatActivity(), LoginView {
                 mPresenter.googleAccLoginCompleting(account)
 
             }catch (ex: ApiException){
+
                 // The ApiException status code indicates the detailed failure reason.
                 // Please refer to the GoogleSignInStatusCodes class reference for more information.
                 Log.w("Google Login Method", "signInResult: failed code = " + ex.statusCode)
@@ -176,77 +161,65 @@ class LoginActivity : AppCompatActivity(), LoginView {
     }
 
     override fun onApiError(ex: ApiException) {
+        progressDialog.dismiss()
         showToastByString(this, "Canceled!!, Error code: ${ex.message!!}")
     }
 
     override fun onLoginSuccess() {
+        progressDialog.dismiss()
         showToastByResourceId(this@LoginActivity, R.string.login_success)
+
         updateUI()
         this.finish()
     }
 
     override fun onLoginFail() {
+        progressDialog.dismiss()
+
         errorDialog(
             this@LoginActivity,
             R.string.login_failed_title,
-            R.string.login_failed_message
+            R.string.general_failed_message
         )
     }
 
+    override fun onEmailConflict() {
+        progressDialog.dismiss()
+
+        errorDialog(
+            this,
+            R.string.login_failed_title,
+            R.string.conflict_email_message)
+    }
+
     override fun onFacebookAccountLoginSuccess() {
+        progressDialog.dismiss()
         updateUI()
     }
 
     override fun onFacebookAccountLoginCancel() {
+        progressDialog.dismiss()
         showToastByString(this, "Canceled!")
     }
 
     override fun onFacebookAccountLoginError(ex: FacebookException?) {
+        progressDialog.dismiss()
         showToastByString(this, ex?.message!!)
     }
 
     override fun onAnonymousLoginSuccess() {
+        progressDialog.dismiss()
         updateUI()
     }
 
-    override fun showEmailError() {
-        edt_email.error = getString(R.string.invalid_email)
+    override fun fireBaseExceptionError(message: String) {
+        progressDialog.dismiss()
+        showFirebaseError(this, message)
     }
 
-    override fun showPasswordError(count: Int) {
-
-        txt_login_min_val_required.visibility = View.VISIBLE
-        txt_login_password_count.text = count.toString()
-
-        if (isPasswordValid(edt_password.text.toString())) {
-            changeColor(
-                listOf(txt_login_password_count, txt_login_min_val_required),
-                R.color.hintDefault
-            )
-        }else {
-            changeColor(
-                listOf(txt_login_password_count, txt_login_min_val_required),
-                R.color.colorRequired
-            )
-        }
-
-    }
-
-    override fun onEmptyFieldsError(vararg emptyFields: EditText) {
-        emptyFields.forEach { it.error = getString(R.string.empty_field_required) }
-    }
-
-    override fun fireBaseExceptionError(message: String) = showToastByString(this, message)
-
-    override fun internetError() = showInternetErrorDialog(this)
-
-    override fun onBackPressed() {
-        if(loginLayoutAnimation!!.isVisible){
-            loginLayoutAnimation?.toggle()
-        }
-        else{
-            super.onBackPressed()
-        }
+    override fun internetError() {
+        progressDialog.dismiss()
+        showInternetErrorDialog(this)
     }
 
     override fun onDestroy() {

@@ -7,7 +7,8 @@
     tools:context=".ui.activities.StartActivity"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="5dp">
+    android:padding="5dp"
+    android:background="@drawable/start_background">
 
     <ImageView
         android:layout_width ="120dp"

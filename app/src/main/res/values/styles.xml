@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Button">
+        <!-- Customize your theme here. -->
+        <item name="background">@drawable/button_background</item>
+    </style>
+
 </resources>

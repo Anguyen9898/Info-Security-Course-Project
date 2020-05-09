@@ -9,9 +9,11 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.RadioGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mancj.slideup.SlideUp
 import com.mancj.slideup.SlideUpBuilder
@@ -59,6 +61,12 @@ fun Fragment.setup(from: FragmentActivity, id: Int, bundle: Bundle) {
         .beginTransaction()
         .replace(id, this)
         .commit()
+}
+
+fun AppCompatActivity.backToPrevious() {
+    if(supportFragmentManager.backStackEntryCount > 0){
+        supportFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    }
 }
 
 inline fun Toolbar.onItemClick(crossinline onItemClickHandler: (menuItem: MenuItem) -> Unit){

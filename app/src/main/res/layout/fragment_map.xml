@@ -21,7 +21,7 @@
             android:background="@color/colorAppbar"
             app:titleTextColor="@color/colorPrimaryDark"
             app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:menu="@menu/menu_appbar"/>
+            app:menu="@menu/menu_map_appbar"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

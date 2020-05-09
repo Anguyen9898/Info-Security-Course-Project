@@ -1,10 +1,11 @@
-package com.anguyen.mymap.ui.activities
+package com.anguyen.mymap.temporary_unused
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.anguyen.mymap.R
 import com.anguyen.mymap.commons.showToastByString
+import com.anguyen.mymap.ui.activities.MainActivity
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place

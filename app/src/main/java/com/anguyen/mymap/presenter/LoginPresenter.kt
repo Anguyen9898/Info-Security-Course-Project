@@ -3,13 +3,12 @@ package com.anguyen.mymap.presenter
 import android.app.Activity
 import android.content.Context
 import android.widget.EditText
-import com.anguyen.mymap.commons.areAnyFieldsEmpty
-import com.anguyen.mymap.commons.isEmailValid
-import com.anguyen.mymap.commons.isNetworkConnected
-import com.anguyen.mymap.firebase_managers.authentication.FirebaseAuthManager
-import com.anguyen.mymap.firebase_managers.databases.FirebaseDataManager
+import com.anguyen.mymap.commons.*
+import com.anguyen.mymap.firebase_managers.FirebaseAuthenticationManager
+import com.anguyen.mymap.firebase_managers.FirebaseDataManager
 import com.anguyen.mymap.models.CoordinateDetail
 import com.anguyen.mymap.models.LoginDetail
+import com.anguyen.mymap.models.NotificationDetail
 import com.anguyen.mymap.ui.views.LoginView
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -19,27 +18,31 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 
 class LoginPresenter constructor(
     var mContext: Context,
-    var mView: LoginView? = null,
-    var mLoginDetail: LoginDetail? = null,
-    var mEdtFields: List<EditText>
+    var mView: LoginView?
 ){
-    val authentication = FirebaseAuthManager(
+    val authentication = FirebaseAuthenticationManager(
         FirebaseAuth.getInstance(),
         mContext as Activity
     )
-    private val database = FirebaseDataManager(FirebaseDatabase.getInstance())
+    private val database =
+        FirebaseDataManager(FirebaseDatabase.getInstance())
 
     fun onLoginByGoogleButtonClicked(){
 
         if(!isNetworkConnected(mContext)!!){
+
             mView?.internetError()
+
         }else{
-            authentication.signInByGoogleAccount()
+            authentication.signInByGoogleAccount{
+                mView?.openGoogleSignInDialog(it)
+            }
         }
 
     }
@@ -49,19 +52,25 @@ class LoginPresenter constructor(
         val credential = GoogleAuthProvider.getCredential(account!!.idToken, null)
 
         authentication.sinInWithCredential(
-            credential = credential,
-            onResult = { isSuccessful, result ->
-                if(isSuccessful){
-                    mView?.onLoginSuccess()
 
-                    database.createGoogleUserData(
-                        result,
-                        CoordinateDetail(0.0, 0.0),
-                        authentication.getUserId()
-                    )
-                }else{
-                    mView?.onLoginFail()
-                }
+            credential = credential,
+
+            onSuccess = { authResult ->
+
+                mView?.onLoginSuccess()
+
+                database.createGoogleUserData(
+                    authResult,
+                    CoordinateDetail(0.0, 0.0),
+                    hashMapOf(Pair(KEY_NOTIFICATION, NotificationDetail())),
+                    authentication.getCurrentUserId(),
+                    GOOGLE_USER_TYPE_URL
+                )
+
+            },
+
+            onError = { googleException ->
+                mView?.fireBaseExceptionError(googleException.message!!)
             }
         )
 
@@ -82,21 +91,27 @@ class LoginPresenter constructor(
             val credential = FacebookAuthProvider.getCredential(result!!.accessToken.token.toString())
 
             authentication.sinInWithCredential(
+
                 credential = credential,
-                onResult = { isSuccessful, authResult ->
+
+                onSuccess = { authResult ->
 
                     mView?.onLoginSuccess()
+                    database.createFacebookUserData(
+                        authResult,
+                        CoordinateDetail(0.0, 0.0),
+                        hashMapOf(Pair(KEY_NOTIFICATION, NotificationDetail())),
+                        authentication.getCurrentUserId(),
+                        FACEBOOK_USER_TYPE_URL
+                    )
 
-                    if(isSuccessful){
-                        database.createFacebookUserData(
-                            authResult,
-                            CoordinateDetail(0.0, 0.0),
-                            authentication.getUserId()
-                        )
-                    }else{
-                        mView?.onLoginFail()
+                },
+
+                onError = { facebookException ->
+                    authentication.facebookLogout{
+                        mView?.onFacebookAccountLoginCancel()
                     }
-
+                    mView?.fireBaseExceptionError(facebookException.message!!)
                 }
             )
 
@@ -112,43 +127,6 @@ class LoginPresenter constructor(
 
     }
 
-    fun onLoginButtonClicked() {
-
-        when{
-            !isNetworkConnected(mContext)!! ->  mView?.internetError()
-
-            areAnyFieldsEmpty(mLoginDetail!!.email, mLoginDetail!!.password) -> {
-                mEdtFields.forEach{
-                    if(it.text.isEmpty()){
-                        mView?.onEmptyFieldsError(it)
-                    }
-                }
-            }
-
-            else -> loginByNormalEmail()
-        }
-
-    }
-
-    private fun loginByNormalEmail(){
-        try {
-
-            if(mLoginDetail?.isValid()!!){
-
-                authentication.signInByNormalAccount(mLoginDetail!!.email,
-                    mLoginDetail!!.password){ isSuccessful ->
-                    if (isSuccessful)
-                        mView?.onLoginSuccess()
-                    else
-                        mView?.onLoginFail()
-                }
-
-            }
-        }catch (ex: FirebaseException){
-            mView?.fireBaseExceptionError(ex.message!!)
-        }
-    }
-
     fun onAnonymousLoginButtonClicked(){
         if(!isNetworkConnected(mContext)!!){
             mView?.internetError()
@@ -162,19 +140,6 @@ class LoginPresenter constructor(
                 mView?.fireBaseExceptionError(ex.message!!)
             }
         }
-    }
-
-    fun onEmailChange(email: String){
-        mLoginDetail?.email = email
-
-        if(!isEmailValid(email) and (email.isNotEmpty() or (email == ""))) {
-            mView?.showEmailError()
-        }
-    }
-
-    fun onPasswordChange(password: String){
-        mLoginDetail?.password = password
-        mView?.showPasswordError(password.length)
     }
 
 }

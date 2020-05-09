@@ -1,6 +1,7 @@
 package com.anguyen.mymap.ui.fragments
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -26,17 +27,16 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.fragment_map.*
 
 const val CAMERA_ZOOM_INDEX = 19f
 
-class MapFragment : Fragment(), OnMapReadyCallback, MapView {
+class MapFragment(private var progressDialog: KProgressHUD) : Fragment(), OnMapReadyCallback, MapView {
 
     private lateinit var mMapPresenter: MapPresenter
     private var supportMapFragment: SupportMapFragment? = null
 
-    private var latLngSearchResult: Place? = null
-    private var isSearchingPlace = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +49,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, MapView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //progressDialog = initProgress(context!!)
+        progressDialog.show()
         //Initialize UI
         initUI()
     }
@@ -57,13 +59,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, MapView {
      *  This method's to initialize all UI's contents
      */
     private fun initUI(){
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         initMapFragment()
 
         Places.initialize(context!!, getString(R.string.google_maps_key))
 
         val userType = this.arguments?.getString(KEY_USER_TYPE)
-        mMapPresenter = MapPresenter(context!!, this, userType!!)
+        mMapPresenter = MapPresenter(context!!, this, userType!!, progressDialog.dismiss())
 
         toolbar.onItemClick { toolbarItemClickedHandler(it) }
     }
@@ -78,6 +81,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, MapView {
         }
 
         supportMapFragment?.getMapAsync(this)
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -87,6 +91,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, MapView {
 
     private fun toolbarItemClickedHandler(menuItem: MenuItem){
         when (menuItem.itemId) {
+
             R.id.search_button -> {
                 val intent = Autocomplete.IntentBuilder(
                     AutocompleteActivityMode.FULLSCREEN,
@@ -95,44 +100,38 @@ class MapFragment : Fragment(), OnMapReadyCallback, MapView {
 
                 startActivityForResult(intent, SEARCH_PLACE_REQUEST_CODE)
             }
+
+            R.id.show_users_location -> {
+                mMapPresenter.showUsersLocationMenuOptionClicked()
+            }
+
+            R.id.clear -> mMapPresenter.mMap?.clear()
+
+            R.id.exit_button -> activity?.finish()
+
         }
     }
 
     override fun onResume() {
-        getLocationPermissionGranted(context!!){
-            if(isSearchingPlace and (latLngSearchResult != null)) {
-                moveToThisLocation(latLngSearchResult!!)
-            }else{
-                //Perform if Permission's granted
-                mMapPresenter.getLastKnownLocation()
-            }
+        progressDialog.dismiss()
 
+        getLocationPermissionGranted(context!!){
+            //Perform if Permission's granted
+            mMapPresenter.getLastKnownLocation()
         }
         super.onResume()
     }
 
-    private fun moveToThisLocation(place: Place){
-        mMapPresenter.mMap?.addMarker(
-            MarkerOptions().position(place.latLng!!)
-                .title("You're at ${place.address}")
-        )
-        mMapPresenter.mMap?.moveCamera(
-            CameraUpdateFactory.newLatLngZoom(
-                place.latLng!!,
-                19f
-            )
-        )
-    }
-
     override fun showGPSSettingUI() {
+        progressDialog.dismiss()
         startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
     }
 
     /**
      * Set the map's camera position to the current location of the device.
      */
-    override fun showLocationOnMap(location: Location?) {
-
+    override fun showCurrentLocationOnMap(location: Location?) {
+        progressDialog.dismiss()
         if(location != null){
             val latLng = LatLng(location.latitude, location.longitude)
 
@@ -146,10 +145,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, MapView {
         }
     }
 
-    override fun showLocationAddress(location: Location?) {
+    override fun showCurrentLocationAddress(location: Location?) {
+        progressDialog.dismiss()
         Toast.makeText(
             context!!,
-            "You're at ${generateLocationToAddress(context!!, location!!)}",
+            "You're at ${convertLocationToAddress(context!!, location!!)}",
             Toast.LENGTH_LONG
         ).show()
     }
@@ -175,22 +175,42 @@ class MapFragment : Fragment(), OnMapReadyCallback, MapView {
             //Get Selected Place result from Main Activity
              SEARCH_PLACE_REQUEST_CODE -> {
                  if (resultCode == Activity.RESULT_OK && data != null) {
-                     latLngSearchResult = Autocomplete.getPlaceFromIntent(data)
-                     isSearchingPlace = true
-                     onResume()
+
+                     val latLng = Autocomplete.getPlaceFromIntent(data)
+
+                     if(latLng != null){
+                         showToastByString(context!!, latLng.address!!)
+                     }else{
+                         showToastByString(context!!, getString(R.string.general_failed_message))
+                     }
+
 
                  } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+
                      val status = Autocomplete.getStatusFromIntent(data!!)
 
                      Log.i("Get Place", status.statusMessage!!)
                      showToastByString(context!!, status.statusMessage!!)
+
+                 }else{
+                     showToastByString(context!!, getString(R.string.general_failed_message))
                  }
              }
         }
     }
 
-    override fun fireBaseExceptionError(message: String) = showToastByString(context!!, message)
+    override fun showAllUsersLocation(latLng: LatLng?) {
+        mMapPresenter.mMap?.addMarker(MarkerOptions().position(latLng!!))
+    }
 
-    override fun internetError() = showInternetErrorDialog(context!!)
+    override fun fireBaseExceptionError(message: String) {
+        progressDialog.dismiss()
+        showFirebaseError(context!!, message)
+    }
+
+    override fun internetError() {
+        progressDialog.dismiss()
+        showInternetErrorDialog(context!!)
+    }
 
 }
