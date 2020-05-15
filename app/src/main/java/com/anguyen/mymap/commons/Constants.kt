@@ -8,12 +8,15 @@ const val FACEBOOK_REQUEST_CODE = 2004
 
 const val SEARCH_PLACE_REQUEST_CODE = 10201
 
+const val PICK_IMAGE_QUEST_CODE = 10351
+
 const val KEY_USER = "Users"
 const val KEY_USER_TYPE = "userType"
 const val KEY_EMAIL_USER = "Email Users"
 const val KEY_GOOGLE_USER = "Google Users"
 const val KEY_FACEBOOK_USER = "Facebook Users"
 const val KEY_GUEST_USER = "Guest"
+const val KEY_AVATAR_URL = "avatarUrl"
 
 const val KEY_USER_TYPE_IMG_URL = "userTypeImgUrl"
 
@@ -40,3 +43,7 @@ const val STATUS_REVOKE_FOLLOW = "Revoked"
 const val STATUS_FOLLOWING = "Following"
 
 const val KEY_EMPTY_DATA = "unknown"
+
+const val ENCODING_KEY = 5
+
+const val KEY_NEW_AVATAR = "new avatar"

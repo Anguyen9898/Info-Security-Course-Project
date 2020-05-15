@@ -3,34 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:id="@+id/login_bottom_layout"
     android:gravity="center_horizontal"
     android:paddingBottom="50dp"
-    android:paddingTop="20dp"
+    android:paddingTop="50dp"
     android:paddingStart="20dp"
-    android:paddingEnd="20dp"
-    android:background="@drawable/circle_background"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-<!--    <com.google.android.material.appbar.AppBarLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="?attr/actionBarSize"-->
-<!--        style="@style/MyMaterialTheme"-->
-<!--        android:id="@+id/appbar_top"-->
-<!--        android:orientation="vertical">-->
-
-<!--        <androidx.appcompat.widget.Toolbar-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="?attr/actionBarSize"-->
-<!--            android:id="@+id/toolbar"-->
-<!--            app:title="@string/btn_email_method"-->
-<!--            android:background="@color/colorAppbar"-->
-<!--            app:titleTextColor="@color/colorPrimaryDark"-->
-<!--            app:layout_scrollFlags="scroll|enterAlways|snap" />-->
-
-<!--    </com.google.android.material.appbar.AppBarLayout>-->
+    android:paddingEnd="20dp">
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -88,7 +67,7 @@
 
     <Button
         android:id="@+id/btn_login"
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:background="@drawable/button_background"
@@ -99,7 +78,7 @@
         android:layout_gravity="center"/>
 
     <Button
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/btn_register"
         android:id="@+id/btn_jump_to_register"

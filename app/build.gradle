@@ -21,6 +21,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -53,8 +54,9 @@ dependencies {
     //Firebase
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.firebase:firebase-database:19.3.0'
-    implementation 'com.google.firebase:firebase-messaging:20.1.6'
+    implementation 'com.google.firebase:firebase-messaging:20.1.7'
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
 
     //Facebook
     implementation 'com.facebook.android:facebook-android-sdk:4.42.0'
@@ -72,6 +74,9 @@ dependencies {
 
     //Kprogresshud
     implementation 'com.kaopiz:kprogresshud:1.2.0'
+
+    //Gif
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
 
 }
 apply plugin: 'com.google.gms.google-services'

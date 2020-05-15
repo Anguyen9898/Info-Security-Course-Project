@@ -2,17 +2,16 @@ package com.anguyen.mymap.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.fragment.app.DialogFragment
 
 import com.anguyen.mymap.R
 import com.anguyen.mymap.commons.*
 import com.anguyen.mymap.models.LoginDetail
-import com.anguyen.mymap.presenter.BottomSheetDialogPresenter
-import com.anguyen.mymap.presenter.LoginPresenter
+import com.anguyen.mymap.presenter.BottomLoginDialogPresenter
 import com.anguyen.mymap.ui.activities.RegisterActivity
 import com.anguyen.mymap.ui.views.BottomDialogLoginView
 import com.anguyen.mymap.ui.views.LoginView
@@ -25,6 +24,11 @@ class BottomDialogLoginFragment(private val mLoginView: LoginView) : BottomSheet
 
     private lateinit var progressDialog: KProgressHUD
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialog)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,8 +40,8 @@ class BottomDialogLoginFragment(private val mLoginView: LoginView) : BottomSheet
     /**
      * Initialize Login Presenter
      */
-    private fun initPresenter(): BottomSheetDialogPresenter {
-        return BottomSheetDialogPresenter(
+    private fun initPresenter(): BottomLoginDialogPresenter {
+        return BottomLoginDialogPresenter(
             context!!,
             this,
             mLoginView,

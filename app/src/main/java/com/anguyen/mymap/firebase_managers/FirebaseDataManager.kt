@@ -234,7 +234,7 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
             .updateChildren(coordinate.toMap())
     }
 
-    fun getUsersLocationData(currentUser: String?, onGetting: (CoordinateDetail) -> Unit){
+    fun getUsersLocationData(currentUser: String?, onGetting: (String, CoordinateDetail) -> Unit){
         database.reference
             .child(KEY_USER)
             .singleValueHandler(
@@ -242,7 +242,7 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
                    allUser.children.forEach { user ->
                        if(user.key != currentUser){ // Skip if user is current user
                            getUserData(user.key.toString()){
-                               onGetting(it?.location!!)
+                               onGetting(it?.id!!, it.location!!)
                            }
 
                        }
@@ -274,6 +274,29 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
                 onGetting(it.userType)
             }
         }
+    }
+
+    fun changeAvatarUrlOnData(userId: String, url: Any, onChange: (Boolean) -> Unit){
+        database.reference
+            .child(KEY_USER)
+            .child(userId)
+            .updateChildren(hashMapOf(Pair(KEY_AVATAR_URL, url)))
+            .addOnCompleteListener {
+                onChange(it.isSuccessful and it.isComplete)
+            }
+    }
+
+    fun getNewAvatarUrl(userId: String, onUpdate: (String) -> Unit){
+        database.reference
+            .child(KEY_USER)
+            .child(userId)
+            .child(KEY_AVATAR_URL)
+            .singleValueHandler(
+            dataChangeHandler = { data ->
+                onUpdate(data.value.toString())
+            },
+            cancelHandler = {}
+        )
     }
 
     fun setUserSearchingList(currentUser: String, onSetting: (UserRespondDetail?) -> Unit){

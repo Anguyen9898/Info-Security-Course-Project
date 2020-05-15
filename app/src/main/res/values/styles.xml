@@ -8,9 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Button">
-        <!-- Customize your theme here. -->
-        <item name="background">@drawable/button_background</item>
+    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetDialogTheme">@drawable/circle_background</item>
+        <item name="android:layout_marginLeft">@dimen/dp3</item>
+        <item name="android:layout_marginRight">@dimen/dp3</item>
+        <item name="android:layout_marginBottom">@dimen/dp1</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
 </resources>

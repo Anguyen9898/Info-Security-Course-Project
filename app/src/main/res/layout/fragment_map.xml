@@ -19,7 +19,7 @@
             android:id="@+id/toolbar"
             app:title="@string/title_activity_maps"
             android:background="@color/colorAppbar"
-            app:titleTextColor="@color/colorPrimaryDark"
+            app:titleTextColor="@color/colorAccent"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:menu="@menu/menu_map_appbar"/>
 
@@ -32,5 +32,18 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_below="@id/appbar_top"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/green_marker"
+        android:backgroundTint="@color/colorFireBrick"
+        android:tint="@color/colorAccent"
+        android:id="@+id/btn_move_to_marker"
+        android:layout_marginBottom="5dp"
+        android:visibility="gone"/>
 
 </RelativeLayout>

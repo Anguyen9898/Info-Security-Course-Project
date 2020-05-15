@@ -13,10 +13,6 @@
         android:title="@string/show_friends_menu_title" />
 
     <item
-        android:id="@+id/show_covid"
-        android:title="@string/show_covid_menu_title" />
-
-    <item
         android:id="@+id/clear"
         android:title="@string/clear_all_marker" />
 

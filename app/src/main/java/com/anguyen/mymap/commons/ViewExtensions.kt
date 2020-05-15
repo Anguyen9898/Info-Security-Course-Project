@@ -47,8 +47,11 @@ inline fun EditText.onFocusChanged(crossinline onFocusChangeHandler: (modeId: In
 }
 
 inline fun BottomNavigationView.onItemSelected(crossinline onItemSelectedHandler
-                                               : (menuItem: MenuItem) -> Boolean){
-    setOnNavigationItemSelectedListener{ onItemSelectedHandler(it) }
+                                               : (menuItem: MenuItem) -> Unit){
+    setOnNavigationItemSelectedListener{
+        onItemSelectedHandler(it)
+        return@setOnNavigationItemSelectedListener true
+    }
 }
 
 inline fun RadioGroup.onCheckedChangeListener(crossinline onItemClickHandler: () -> Unit){

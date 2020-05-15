@@ -99,6 +99,8 @@ class RegisterPresenter constructor (
            }catch (ex : FirebaseAuthException){
                mView?.fireBaseExceptionError(ex.message!!)
            }
+       }else{
+           mView?.onRegisterFail()
        }
 
     }

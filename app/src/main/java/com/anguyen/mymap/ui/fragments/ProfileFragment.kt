@@ -20,13 +20,16 @@ import com.mancj.slideup.SlideUp
 import com.mancj.slideup.SlideUpBuilder
 import kotlinx.android.synthetic.main.fragment_profile.*
 
-class ProfileFragment(private var progressDialog: KProgressHUD) : Fragment(), ProfileFragmentView, RevokeDialogFragment.RevokeDialogListener {
+class ProfileFragment(
+    private var progressDialog: KProgressHUD? = null
+
+) : Fragment(), ProfileFragmentView, RevokeDialogFragment.RevokeDialogListener {
 
     private lateinit var mPresenter: ProfileFragmentPresenter
     private lateinit var userType: String
 
     private var layoutAnimation: SlideUp? = null
-    //private lateinit var progressDialog: KProgressHUD
+    //private lateinit var progressDialog?: KProgressHUD
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +44,7 @@ class ProfileFragment(private var progressDialog: KProgressHUD) : Fragment(), Pr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //progressDialog = initProgress(context!!)
+        //progressDialog? = initProgress(context!!)
 
         initUI()
     }
@@ -119,7 +122,7 @@ class ProfileFragment(private var progressDialog: KProgressHUD) : Fragment(), Pr
             setTextIfAnyEditTextEmpty()
 
             setEditable(false)
-            progressDialog.dismiss()
+            progressDialog?.dismiss()
         }
     }
 
@@ -140,7 +143,7 @@ class ProfileFragment(private var progressDialog: KProgressHUD) : Fragment(), Pr
 
                 btn_logout.visibility = View.VISIBLE
                 btn_logout.onClick {
-                    progressDialog.show()
+                    progressDialog?.show()
                     mPresenter.logout()
                 }
             }
@@ -150,9 +153,9 @@ class ProfileFragment(private var progressDialog: KProgressHUD) : Fragment(), Pr
 
                 btn_logout.visibility = View.VISIBLE
                 btn_logout.onClick {
-                    progressDialog.show()
+                    progressDialog?.show()
 
-                    RevokeDialogFragment(this, progressDialog)
+                    RevokeDialogFragment(this, progressDialog!!)
                         .show(childFragmentManager, "dialog")
                 }
             }
@@ -169,7 +172,7 @@ class ProfileFragment(private var progressDialog: KProgressHUD) : Fragment(), Pr
 
                 btn_logout.visibility = View.VISIBLE
                 btn_logout.onClick {
-                    progressDialog.show()
+                    progressDialog?.show()
                     mPresenter.deleteCurrentGuest()
                 }
             }
@@ -179,6 +182,7 @@ class ProfileFragment(private var progressDialog: KProgressHUD) : Fragment(), Pr
     }
 
     override fun onRevokeConfirmedListener(isChecked: Boolean) {
+        progressDialog?.dismiss()
         if(isChecked){
             mPresenter.onRevokeClicked()
         }
@@ -186,7 +190,7 @@ class ProfileFragment(private var progressDialog: KProgressHUD) : Fragment(), Pr
     }
 
     override fun openLoginUI() {
-        progressDialog.dismiss()
+        progressDialog?.dismiss()
         startActivity(Intent(activity, LoginActivity::class.java))
         activity?.finish()
     }
@@ -196,12 +200,12 @@ class ProfileFragment(private var progressDialog: KProgressHUD) : Fragment(), Pr
     }
 
     override fun fireBaseExceptionError(message: String) {
-        progressDialog.dismiss()
+        progressDialog?.dismiss()
         showFirebaseError(context!!, message)
     }
 
     override fun internetError() {
-        progressDialog.dismiss()
+        progressDialog?.dismiss()
         showInternetErrorDialog(context!!)
     }
 

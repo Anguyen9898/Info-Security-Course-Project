@@ -47,7 +47,7 @@
     <string name="search_btn_menu_title">Search</string>
     <string name="show_covid_menu_title">Show Covid-19 Areas</string>
     <string name="show_friends_menu_title">Show All Users Location</string>
-    <string name="home_menu_title">Home</string>
+    <string name="home_menu_title">Map</string>
     <string name="notification_menu_title">Notification</string>
     <string name="message_menu_title">Search</string>
     <string name="profile_menu_title">Profile</string>
@@ -89,5 +89,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="clear_all_marker">Clear All marker</string>
+    <string name="about_menu_title">About</string>
+    <string name="choose_gender">Choose your gender...</string>
+    <string name="apply_string">Apply</string>
 
 </resources>

@@ -61,7 +61,7 @@ class LoginPresenter constructor(
 
                 database.createGoogleUserData(
                     authResult,
-                    CoordinateDetail(0.0, 0.0),
+                    CoordinateDetail(),
                     hashMapOf(Pair(KEY_NOTIFICATION, NotificationDetail())),
                     authentication.getCurrentUserId(),
                     GOOGLE_USER_TYPE_URL
@@ -99,7 +99,7 @@ class LoginPresenter constructor(
                     mView?.onLoginSuccess()
                     database.createFacebookUserData(
                         authResult,
-                        CoordinateDetail(0.0, 0.0),
+                        CoordinateDetail(),
                         hashMapOf(Pair(KEY_NOTIFICATION, NotificationDetail())),
                         authentication.getCurrentUserId(),
                         FACEBOOK_USER_TYPE_URL

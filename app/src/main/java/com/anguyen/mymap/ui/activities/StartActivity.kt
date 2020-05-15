@@ -24,18 +24,18 @@ class StartActivity : AppCompatActivity(), StartView, Animation.AnimationListene
     }
 
     private fun initUI(){
-        updateUI()
+        //updateUI()
         val fadeout = AlphaAnimation(1f, 1f)
         fadeout.duration = 2000
         fadeout.setAnimationListener(this)
 
-        //start_logo.startAnimation(fadeout)
+        start_logo.startAnimation(fadeout)
     }
 
     override fun onAnimationRepeat(animation: Animation?) = Unit
 
     override fun onAnimationStart(animation: Animation?){
-        //start_logo.setBackgroundResource(R.drawable.start_logo)
+        start_logo.setBackgroundResource(R.drawable.start_logo)
     }
 
     override fun onAnimationEnd(animation: Animation?) = updateUI()

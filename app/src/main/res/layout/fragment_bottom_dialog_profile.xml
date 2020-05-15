@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.fragments.BottomSheetDialogProfile">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/colorAccent"
+        android:layout_alignParentTop="true"
+        android:id="@+id/top_layout"
+        tools:ignore="RtlSymmetry"
+        android:paddingStart="2dp"
+        android:paddingTop="2dp">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/dialog_img_profile"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:scaleType="fitCenter"
+            app:civ_border_color="#000"
+            app:civ_border="true"
+            app:civ_border_width="1dp"
+            android:layout_centerVertical="true"/>
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/dialog_img_user_type"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="10dp"
+            app:civ_border="true"
+            app:civ_border_width="1dp"
+            app:civ_border_color="@color/colorAppbar"/>
+
+        <TextView
+            android:id="@+id/dialog_txt_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="20sp"
+            android:textColor="#000"
+            android:padding="3dp"
+            android:gravity="center"
+            android:layout_toEndOf="@id/dialog_img_profile"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:layout_below="@id/top_layout"
+        android:id="@+id/second_layout">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_gender">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_gender"
+                android:drawablePadding="10dp"
+                android:id="@+id/dialog_edt_gender"
+                android:enabled="false"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_email">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_email2"
+                android:drawablePadding="10dp"
+                android:id="@+id/dialog_edt_email"
+                android:enabled="false"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_phone">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_phone"
+                android:drawablePadding="10dp"
+                android:inputType="phone"
+                android:id="@+id/dialog_edt_phone_number"
+                android:enabled="false"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/second_layout"
+        android:id="@+id/txt_title"
+        android:text="Other Informations"
+        android:background="@drawable/text_view_background"
+        android:padding="10dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/txt_title"
+        android:id="@+id/txt_other_info"
+        android:background="@drawable/circle_background"/>
+
+
+</RelativeLayout>

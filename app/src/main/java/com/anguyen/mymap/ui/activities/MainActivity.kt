@@ -2,15 +2,13 @@ package com.anguyen.mymap.ui.activities
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.anguyen.mymap.adapters.viewpager.MainFragmentPagerAdapter
 import com.anguyen.mymap.R
 import com.anguyen.mymap.commons.*
 import com.anguyen.mymap.presenter.MainPresenter
-import com.anguyen.mymap.ui.fragments.MapFragment
-import com.anguyen.mymap.ui.fragments.ProfileFragment
 import com.anguyen.mymap.ui.views.MainView
 import com.google.android.libraries.places.api.Places
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -25,7 +23,7 @@ class MainActivity : AppCompatActivity(), MainView,  ViewPager.OnPageChangeListe
        val SHOW_ACTION = "Show"
     }
 
-    private var selectedFragment: Fragment? = null
+    private var selectedFragmentIndexBefore = 0
 
     private lateinit var mPresenter: MainPresenter
 
@@ -39,12 +37,20 @@ class MainActivity : AppCompatActivity(), MainView,  ViewPager.OnPageChangeListe
     }
 
     private fun initUI() {
+
         mPresenter = MainPresenter(this, this)
 
         progressDialog = initProgress(this)
 
-        setFragmentData()
         setViewPager()
+
+        bottom_navigation.onItemSelected {
+            view_container.currentItem = when(it.itemId){
+                R.id.nav_profile -> 0
+                R.id.nav_home -> 1
+                else -> 2 // R.id.nav_about
+            }
+        }
 
         //Initialize Places Object
         Places.initialize(this, getString(R.string.google_maps_key))
@@ -57,64 +63,29 @@ class MainActivity : AppCompatActivity(), MainView,  ViewPager.OnPageChangeListe
             intent.extras!!,
             progressDialog
         )
+
+        view_container.currentItem = 1
+        bottom_navigation.selectedItemId = R.id.nav_home
+
         view_container.addOnPageChangeListener(this)
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-        when(position){
-            0 -> bottom_navigation.selectedItemId = R.id.nav_profile
-            1 -> bottom_navigation.selectedItemId = R.id.nav_home
-            2 ->{
-                showDevelopingFeatureWarning(this){ dialog ->
-                    backToPrevious()
-                    dialog.dismiss()
-                }
-            }
-
-            3 ->{
-                progressDialog.dismiss()
-                showDevelopingFeatureWarning(this){ dialog ->
-                    backToPrevious()
-                    dialog.dismiss()
-                }
-            }
-        }
-
+        //bottom_navigation.selectedItemId = setBottomNavigationSelected(position)
     }
 
-    override fun onPageSelected(position: Int) = Unit
+    private fun setBottomNavigationSelected(itemIndex: Int){
+        bottom_navigation.selectedItemId = when(itemIndex){
+            0 -> R.id.nav_profile
+            1 -> R.id.nav_home
+            else -> R.id.nav_about // itemIndex = 2
+        }
+    }
+
+    override fun onPageSelected(position: Int) {
+        setBottomNavigationSelected(position)
+    }
     override fun onPageScrollStateChanged(state: Int) = Unit
-
-    private fun setFragmentData(){
-        bottom_navigation.onItemSelected {
-
-            selectedFragment = when(it.itemId){
-
-                R.id.nav_home -> MapFragment(progressDialog)
-
-//                R.id.nav_notify ->{ NotificationFragment() }
-//
-//                R.id.nav_search ->{ SearchFragment() }
-
-                R.id.nav_profile -> ProfileFragment(progressDialog)
-
-                else -> null
-
-            }
-
-            if(selectedFragment != null){
-                selectedFragment?.setup(this, R.id.fragment_container, intent.extras!!)
-            }else{
-                showDevelopingFeatureWarning(this){ dialog ->
-                    backToPrevious()
-                    dialog.dismiss()
-                }
-            }
-
-            return@onItemSelected true
-        }
-
-    }
 
     override fun onStop() {
         if(intent.extras?.getString(KEY_USER_TYPE) == KEY_GUEST_USER){

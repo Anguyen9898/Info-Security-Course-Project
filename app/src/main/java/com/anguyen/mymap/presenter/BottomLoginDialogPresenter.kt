@@ -11,7 +11,7 @@ import com.anguyen.mymap.ui.views.LoginView
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 
-class BottomSheetDialogPresenter (
+class BottomLoginDialogPresenter (
     var mContext: Context,
     var mBottomDialogLoginView: BottomDialogLoginView?,
     var mLoginView: LoginView?,

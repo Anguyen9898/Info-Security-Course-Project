@@ -11,7 +11,7 @@ interface MapView: BaseView {
 
     fun showGPSSettingUI()
 
-    fun showAllUsersLocation(latLng: LatLng?)
+    fun showAllUsersLocation(userId:String, latLng: LatLng?)
 
     //fun showLocationOnMap(location: Location?)
 

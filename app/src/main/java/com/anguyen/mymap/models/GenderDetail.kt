@@ -1,7 +1,6 @@
 package com.anguyen.mymap.models
 
 val genderDetail = listOf(
-    "Choose your gender...",
     "Male",
     "Female",
     "Transexual Male",
