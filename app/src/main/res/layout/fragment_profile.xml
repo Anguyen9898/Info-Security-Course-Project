@@ -25,9 +25,9 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
             android:scaleType="fitCenter"
-            app:civ_border_color="#000"
+            app:civ_border_color="@color/colorAppbar"
             app:civ_border="true"
-            app:civ_border_width="1dp"
+            app:civ_border_width="2dp"
             android:layout_centerVertical="true"/>
 
         <com.mikhaellopez.circularimageview.CircularImageView

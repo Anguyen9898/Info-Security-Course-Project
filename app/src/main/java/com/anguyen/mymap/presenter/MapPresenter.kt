@@ -3,6 +3,7 @@ package com.anguyen.mymap.presenter
 import android.app.Activity
 import android.content.Context
 import android.location.Location
+import android.location.LocationManager
 import android.util.Log
 import androidx.fragment.app.FragmentManager
 import com.anguyen.mymap.R
@@ -40,8 +41,8 @@ class MapPresenter(
 
     private var markerIndex = 0
 
-    private lateinit var deviceLocation: LatLng
-    private lateinit var destination: LatLng
+    private lateinit var originLocation: LatLng
+    private var destination: LatLng? = null
     private var mPolyline: Polyline? = null
 
     private val mFusedLocationProviderClient = LocationServices
@@ -104,7 +105,7 @@ class MapPresenter(
 
                         mMapView?.showCurrentLocationOnMap(location)
 
-                        deviceLocation = LatLng(location?.latitude!!, location.longitude)
+                        originLocation = LatLng(location?.latitude!!, location.longitude)
 
                         if(mUserType != KEY_GUEST_USER) { //Disable this function if user type is guest
 
@@ -178,15 +179,37 @@ class MapPresenter(
             markerIndex = 0
         }
 
-        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(markers[markerIndex], CAMERA_ZOOM_INDEX))
+        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(markers[markerIndex], 13f))
         destination = markers[markerIndex]
 
         markerIndex++
 
     }
 
+    /**
+     * Draw a route from current to any Location by Polyline
+     */
     fun drawPrimaryLinePath(){
-        val url = getLocationUrl(deviceLocation, destination, "driving")
+        if(mPolyline != null){
+            mPolyline?.remove()
+        }
+
+        mPolyline = mMap?.addPolyline(PolylineOptions().apply {
+            clickable(true)
+
+            add(originLocation, destination)
+        })
+    }
+
+    /**
+     * Draw a route from current to any Location by Direction Api and Fectching Url
+     * error_message" : "Must enable Billing on the Google Cloud Project
+     * at https://console.cloud.google.com/project/_/billing/enable Learn more
+     * at https://developers.google.com/maps/gmp-get-started",
+     * "routes" : [],   "status" : "REQUEST_DENIED"
+     */
+    fun drawPrimaryLinePathByUrl(){
+        val url = getLocationUrl(originLocation, destination!!, "driving")
         FetchURL(this).execute(url, "driving")
     }
 
@@ -202,7 +225,7 @@ class MapPresenter(
         //Output format
         val output = "json"
 
-        return "http://maps.googleapis.com/maps/api/directions/$output?$parameter&key=${mContext?.getString(
+        return "https://maps.googleapis.com/maps/api/directions/$output?$parameter&key=${mContext?.getString(
             R.string.google_maps_key
         )}"
     }
@@ -214,16 +237,44 @@ class MapPresenter(
 
         mPolyline = mMap?.addPolyline(values[0] as PolylineOptions)
     }
+    /**
+     * The end of Draw route method
+     */
 
+    /**
+     * Show user's profile when current user clicks on Marker
+     */
     override fun onMarkerClick(marker: Marker?): Boolean {
+        destination = markers[userIds.indexOf(marker?.title)]
+
         userIds.forEach { userId ->
             if(marker?.title == userId){
-                val userProfileDialog = BottomSheetDialogProfile(userId, progressDialog)
+                val userProfileDialog = BottomSheetDialogProfile(
+                    userId,
+                    progressDialog,
+                    distanceBetween2Location()
+                )
 
                 userProfileDialog.show(fragmentManager, "dialog")
             }
         }
+
         return true
+    }
+
+    private fun distanceBetween2Location(): Float{
+
+        val origin = Location(LocationManager.GPS_PROVIDER).apply {
+            latitude = originLocation.latitude
+            longitude = originLocation.longitude
+        }
+        val destination = Location(LocationManager.GPS_PROVIDER).apply {
+            latitude = destination?.latitude!!
+            longitude = destination?.longitude!!
+        }
+
+        return origin.distanceTo(destination)
+
     }
 
 }

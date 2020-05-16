@@ -19,7 +19,7 @@
             android:id="@+id/toolbar"
             app:title="@string/title_activity_maps"
             android:background="@color/colorAppbar"
-            app:titleTextColor="@color/colorAccent"
+            app:titleTextColor="@color/colorCyan"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:menu="@menu/menu_map_appbar"/>
 
@@ -36,7 +36,7 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimary"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:src="@drawable/green_marker"

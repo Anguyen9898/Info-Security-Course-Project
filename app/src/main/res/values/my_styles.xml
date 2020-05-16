@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="MyMaterialTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="MyMaterialTheme" parent="AppTheme">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">true</item>
+        <item name="itemBackground">@color/colorCyan</item>
     </style>
 </resources>

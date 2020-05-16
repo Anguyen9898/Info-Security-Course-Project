@@ -92,5 +92,10 @@
     <string name="about_menu_title">About</string>
     <string name="choose_gender">Choose your gender...</string>
     <string name="apply_string">Apply</string>
+    <string name="title_distance">Distance between two of you</string>
+    <string name="title_other_info">Other Informations</string>
+
+    <string name="km_unit">km</string>
+    <string name="meter_unit">m</string>
 
 </resources>

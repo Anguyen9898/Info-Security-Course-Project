@@ -70,9 +70,12 @@ class MainActivity : AppCompatActivity(), MainView,  ViewPager.OnPageChangeListe
         view_container.addOnPageChangeListener(this)
     }
 
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-        //bottom_navigation.selectedItemId = setBottomNavigationSelected(position)
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
+
+    override fun onPageSelected(position: Int) {
+        setBottomNavigationSelected(position)
     }
+    override fun onPageScrollStateChanged(state: Int) = Unit
 
     private fun setBottomNavigationSelected(itemIndex: Int){
         bottom_navigation.selectedItemId = when(itemIndex){
@@ -81,11 +84,6 @@ class MainActivity : AppCompatActivity(), MainView,  ViewPager.OnPageChangeListe
             else -> R.id.nav_about // itemIndex = 2
         }
     }
-
-    override fun onPageSelected(position: Int) {
-        setBottomNavigationSelected(position)
-    }
-    override fun onPageScrollStateChanged(state: Int) = Unit
 
     override fun onStop() {
         if(intent.extras?.getString(KEY_USER_TYPE) == KEY_GUEST_USER){

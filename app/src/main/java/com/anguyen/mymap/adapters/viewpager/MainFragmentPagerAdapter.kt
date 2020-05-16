@@ -26,10 +26,10 @@ class MainFragmentPagerAdapter(
         return when(i){
             0 -> ProfileFragment(progressDialog)
             1 -> MapFragment(progressDialog)
-            else -> AboutFragment(progressDialog)
+            else -> AboutFragment(progressDialog) // i = 2
         }
     }
 
-    override fun getCount() = 4
+    override fun getCount() = 3
 
 }

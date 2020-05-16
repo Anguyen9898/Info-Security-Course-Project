@@ -4,7 +4,7 @@ import android.content.Context
 import com.kaopiz.kprogresshud.KProgressHUD
 
 fun initProgress(from: Context) = KProgressHUD.create(from)
-    .setCancellable(false)
+    .setCancellable(true)
     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
     .setLabel("Please wait")
     .setDimAmount(0.5f)!!

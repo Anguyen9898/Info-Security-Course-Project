@@ -47,3 +47,5 @@ const val KEY_EMPTY_DATA = "unknown"
 const val ENCODING_KEY = 5
 
 const val KEY_NEW_AVATAR = "new avatar"
+
+const val averageVelocity = 0.4857f
