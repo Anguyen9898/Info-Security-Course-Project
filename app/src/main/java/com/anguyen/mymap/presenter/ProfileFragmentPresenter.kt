@@ -50,11 +50,7 @@ class ProfileFragmentPresenter constructor(
     }
 
     fun onRevokeClicked() {
-        authentication.revokeGoogleAccount { isSuccessful ->
-            if(isSuccessful){
-                mView?.onRevokeSuccess()
-            }
-        }
+        authentication.revokeGoogleAccount()
     }
 
     fun onFacebookLogoutButtonClicked() {

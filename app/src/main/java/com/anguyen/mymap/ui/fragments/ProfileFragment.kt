@@ -203,20 +203,14 @@ class ProfileFragment(
         progressDialog?.dismiss()
         if(isChecked){
             mPresenter.onRevokeClicked()
-        } else {
-            mPresenter.logout()
         }
+        mPresenter.logout()
     }
 
     override fun openLoginUI() {
         progressDialog?.dismiss()
         startActivity(Intent(activity, LoginActivity::class.java))
         activity?.finish()
-    }
-
-    override fun onRevokeSuccess() {
-        showToastByString(context!!, "Revoke Account Successfully")
-        openLoginUI()
     }
 
     override fun fireBaseExceptionError(message: String) {

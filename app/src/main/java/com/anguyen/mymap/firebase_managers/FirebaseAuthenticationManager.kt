@@ -114,12 +114,7 @@ class FirebaseAuthenticationManager constructor(
         onResult()
     }
 
-    fun revokeGoogleAccount(onResult: (Boolean)-> Unit){
-        googleSignInClient.revokeAccess()
-            .addOnCompleteListener {
-                onResult(it.isComplete and it.isSuccessful)
-            }
-    }
+    fun revokeGoogleAccount() = googleSignInClient.revokeAccess()
 
     fun facebookLogout(onResult: () -> Unit){
         facebookManager.logOut()

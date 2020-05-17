@@ -9,8 +9,6 @@ interface ProfileFragmentView : BaseView{
 
     fun openLoginUI()
 
-    fun onRevokeSuccess()
-
     fun onProfileUpdateSuccessfully()
 
     fun onProfileUpdateFailed()

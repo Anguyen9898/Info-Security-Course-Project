@@ -35,7 +35,6 @@ class LoginActivity : AppCompatActivity(), LoginView {
         setContentView(R.layout.activity_login)
 
         progressDialog = initProgress(this)
-        progressDialog.show()
 
         initUI()
     }
