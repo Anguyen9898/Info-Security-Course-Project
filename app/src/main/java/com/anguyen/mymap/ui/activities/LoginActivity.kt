@@ -73,8 +73,6 @@ class LoginActivity : AppCompatActivity(), LoginView {
 
         btn_facebook_method.setReadPermissions("email", "public_profile")
         btn_facebook_method.onClick {
-            progressDialog.show()
-
             mPresenter.onLoginByFacebookButtonClicked(mCallbackManager)
             loginMethod = KEY_FACEBOOK_USER // Set user type
         }

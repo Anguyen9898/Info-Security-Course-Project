@@ -2,7 +2,9 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_view_background"
+    android:padding="15dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -22,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/google_logout_dialog_message"
-            android:textSize="20sp"
+            android:textSize="17sp"
             android:textColor="@color/colorAccent"
             android:id="@+id/txt_question" />
 
@@ -36,6 +38,7 @@
         android:checkMark="@drawable/ic_checked"
         android:padding="10dp"
         android:textSize="16sp"
+        android:textColor="@color/colorPrimary"
         android:textStyle="italic"
         android:id="@+id/txt_check"
         android:layout_below="@id/layout_title" />
@@ -52,14 +55,15 @@
         android:gravity="end"/>
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/btn_logout"
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="italic"
         android:gravity="center"
+        android:layout_centerHorizontal="true"
         android:id="@+id/btn_logout_confirm"
-        android:background="@drawable/text_view_background"
+        android:background="@drawable/button_background"
         android:layout_below="@id/txt_detail"
         android:textAllCaps="false"
         android:layout_marginTop="10dp"/>

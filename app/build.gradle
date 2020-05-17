@@ -61,7 +61,6 @@ dependencies {
 
     //Facebook
     implementation 'com.facebook.android:facebook-android-sdk:4.42.0'
-    implementation 'com.facebook.rebound:rebound:0.3.8'
     implementation 'com.facebook.android:facebook-login:5.15.3'
 
     //Slide animation

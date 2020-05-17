@@ -21,6 +21,8 @@ class AvatarSelectorActivity : AppCompatActivity(), AvatarSelectorView {
 
     private lateinit var mPresenter: AvatarSelectorPresenter
 
+    private var isChoseAvatar = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_avatar)
@@ -59,18 +61,22 @@ class AvatarSelectorActivity : AppCompatActivity(), AvatarSelectorView {
         startActivityForResult(photoPickerIntent, PICK_IMAGE_QUEST_CODE)
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        progressDialog.show()
+    override fun onResume() {
+        if(isChoseAvatar){
+            progressDialog.show()
+        }
+        super.onResume()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if(requestCode == PICK_IMAGE_QUEST_CODE){
             txt_skip.text = getString(R.string.apply_string)
 
             if(resultCode == Activity.RESULT_OK && data != null){
-                progressDialog.show()
+                isChoseAvatar = true
+
                 try {
                     val imageUri = data.data!!
                     mPresenter.uploadAvatar(imageUri)
@@ -78,9 +84,10 @@ class AvatarSelectorActivity : AppCompatActivity(), AvatarSelectorView {
                 }catch (ex: FileNotFoundException){
                     onFileNotFoundException(ex.message!!)
                 }
+
+            }else{
+                onCancel("You choose nothing!")
             }
-        }else{
-            onCancel("You choose nothing!")
         }
     }
 
@@ -90,9 +97,9 @@ class AvatarSelectorActivity : AppCompatActivity(), AvatarSelectorView {
     }
 
     override fun onUploadSuccessful(url: String) {
-        progressDialog.dismiss()
         Glide.with(this).load(url).into(img_avatar)
         showToastByString(this, "Upload successfully")
+        progressDialog.dismiss()
     }
 
     override fun onUploadFailed() {

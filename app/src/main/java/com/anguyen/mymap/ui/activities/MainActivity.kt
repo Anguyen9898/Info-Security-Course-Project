@@ -92,11 +92,9 @@ class MainActivity : AppCompatActivity(), MainView,  ViewPager.OnPageChangeListe
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-
         //Set BackPress for fragment
-        val fragment = supportFragmentManager.findFragmentById(R.id.view_container)
-        (fragment as IOnBackPressed).onBackPressed().not().let {
+        //val fragment = supportFragmentManager.findFragmentById(R.id.view_container)
+        (view_container as? IOnBackPressed)?.onBackPressed()?.not().let {
             super.onBackPressed()
         }
     }

@@ -34,8 +34,10 @@
     <string name="general_negative_button">Cancel</string>
 
     <!-- Responding Messages -->
-    <string name="error_title">Oops</string>
+    <string name="error_title">Oops!</string>
     <string name="error_message">Something went wrong! Please try again.</string>
+
+    <string name="error_guest">"This feature is not support Guest User"</string>
 
     <string name="internet_error_title">Internet Error!</string>
     <string name="internet_error_message">Do you want to go to wifi setting?</string>
@@ -72,7 +74,7 @@
     <string name="facebook_app_id">541237316581533</string>
     <string name="fb_login_protocol_scheme">fb541237316581533</string>
     <string name="google_logout_dialog_message">You\'re about to log out, Do you want to revoke your google account too?</string>
-    <string name="revoke_selector">Click me to make your decision</string>
+    <string name="revoke_selector"><i>Click me to make your decision</i></string>
     <string name="revoke_option1">Yes, Please!</string>
     <string name="revoke_option2">No, Keep me sign in!</string>
     <string name="txt_id">Your ID:</string>

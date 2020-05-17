@@ -70,8 +70,12 @@ class ProfileFragment(
 
         //Button clicked handler
         btn_edit_profile.onClick {
-            setEditable(true)
-            layoutAnimation?.show()
+            if(userType == KEY_EMAIL_USER){
+                setEditable(true)
+                layoutAnimation?.show()
+            }else{
+                errorDialog(context!!, getString(R.string.error_title), "This feature is not support your account's type")
+            }
         }
 
         btn_save.onClick {
@@ -199,8 +203,9 @@ class ProfileFragment(
         progressDialog?.dismiss()
         if(isChecked){
             mPresenter.onRevokeClicked()
+        } else {
+            mPresenter.logout()
         }
-        mPresenter.logout()
     }
 
     override fun openLoginUI() {
@@ -211,6 +216,7 @@ class ProfileFragment(
 
     override fun onRevokeSuccess() {
         showToastByString(context!!, "Revoke Account Successfully")
+        openLoginUI()
     }
 
     override fun fireBaseExceptionError(message: String) {

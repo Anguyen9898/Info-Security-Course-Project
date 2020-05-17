@@ -43,6 +43,8 @@ class MapFragment(
 
     private var layoutAnimation: SlideUp? = null
 
+    private var userType: String? = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,7 +73,8 @@ class MapFragment(
 
         Places.initialize(context!!, getString(R.string.google_maps_key))
 
-        val userType = this.arguments?.getString(KEY_USER_TYPE)
+        userType = this.arguments?.getString(KEY_USER_TYPE)
+
         mMapPresenter = MapPresenter(
             context!!,
             this,
@@ -117,6 +120,7 @@ class MapFragment(
         when (menuItem.itemId) {
 
             R.id.search_button -> {
+
                 val intent = Autocomplete.IntentBuilder(
                     AutocompleteActivityMode.FULLSCREEN,
                     listOf(Place.Field.NAME, Place.Field.LAT_LNG)
@@ -126,7 +130,12 @@ class MapFragment(
             }
 
             R.id.show_users_location -> {
-                mMapPresenter.showUsersLocationMenuOptionClicked()
+                if(!isGuest()){
+                    mMapPresenter.showUsersLocationMenuOptionClicked()
+                }else{
+                    errorDialog(context!!, getString(R.string.error_title), getString(R.string.error_guest))
+                }
+
             }
 
             R.id.clear -> {
@@ -140,6 +149,10 @@ class MapFragment(
             R.id.exit_button -> activity?.finish()
 
         }
+    }
+
+    private fun isGuest(): Boolean{
+        return userType == KEY_GUEST_USER
     }
 
     override fun onResume() {
