@@ -299,6 +299,16 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
         )
     }
 
+    fun updateProfile(userId: String, newData: HashMap<String, Any>, onChange: (Boolean) -> Unit){
+        database.reference
+            .child(KEY_USER)
+            .child(userId)
+            .updateChildren(newData)
+            .addOnCompleteListener {
+                onChange(it.isComplete and it.isSuccessful)
+            }
+    }
+
     fun setUserSearchingList(currentUser: String, onSetting: (UserRespondDetail?) -> Unit){
         database.reference
             .child(KEY_USER)
@@ -336,32 +346,5 @@ class FirebaseDataManager constructor(private val database: FirebaseDatabase){
         }
     }
 
-//    fun checkNotificationStatus(currentUser: String,
-//                                fireStore: FirebaseCloudStoreManager,
-//                                onChecking: (NotificationDetail?) -> Unit
-//    ){
-//        database.reference
-//            .child(KEY_USER)
-//            .singleValueHandler(
-//                dataChangeHandler = { data ->
-//                   data.children.forEach { user ->
-//                       if(user.key.toString() != currentUser) { //Only check data users which are different from current
-//
-//                           user.children.forEach {
-//                               val notificationId = it.child(KEY_NOTIFICATION).child("receive").value.toString()
-//                               fireStore.getRequestFollowNotificationData(notificationId){
-//                                       notification -> onChecking(notification)
-//                               }
-//                           }
-//
-//                       }
-//                       else{
-//                           onChecking(null)
-//                       }
-//                   }
-//                },
-//                cancelHandler = {}
-//            )
-//    }
 
 }

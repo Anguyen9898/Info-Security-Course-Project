@@ -11,4 +11,8 @@ interface ProfileFragmentView : BaseView{
 
     fun onRevokeSuccess()
 
+    fun onProfileUpdateSuccessfully()
+
+    fun onProfileUpdateFailed()
+
 }

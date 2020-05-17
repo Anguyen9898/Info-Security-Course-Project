@@ -11,6 +11,9 @@ const val SEARCH_PLACE_REQUEST_CODE = 10201
 const val PICK_IMAGE_QUEST_CODE = 10351
 
 const val KEY_USER = "Users"
+const val KEY_USER_NAME = "username"
+const val KEY_GENDER = "gender"
+const val KEY_PHONE = "phoneNumber"
 const val KEY_USER_TYPE = "userType"
 const val KEY_EMAIL_USER = "Email Users"
 const val KEY_GOOGLE_USER = "Google Users"

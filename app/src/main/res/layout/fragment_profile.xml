@@ -134,7 +134,9 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_gender"
                 android:drawablePadding="10dp"
-                android:id="@+id/edt_gender"/>
+                android:id="@+id/edt_gender"
+                android:focusableInTouchMode="false"
+                android:cursorVisible="false"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -207,11 +209,11 @@
         android:layout_below="@id/second_layout"
         android:weightSum="4"
         android:background="#fff"
-        android:id="@+id/hidden_layout"
-        android:visibility="gone">
+        android:gravity="center"
+        android:id="@+id/hidden_layout">
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:text="@string/btn_save"
@@ -222,7 +224,7 @@
             android:background="@drawable/text_view_background"/>
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:text="@string/btn_cancel"

@@ -1,6 +1,5 @@
 package com.anguyen.mymap.ui.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
@@ -23,13 +22,12 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 class ProfileFragment(
     private var progressDialog: KProgressHUD? = null
 
-) : Fragment(), ProfileFragmentView, RevokeDialogFragment.RevokeDialogListener {
+) : Fragment(), ProfileFragmentView, IOnBackPressed, RevokeDialogFragment.RevokeDialogListener {
 
     private lateinit var mPresenter: ProfileFragmentPresenter
     private lateinit var userType: String
 
     private var layoutAnimation: SlideUp? = null
-    //private lateinit var progressDialog?: KProgressHUD
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,9 +41,7 @@ class ProfileFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //progressDialog? = initProgress(context!!)
-
+        progressDialog?.show()
         initUI()
     }
 
@@ -68,7 +64,7 @@ class ProfileFragment(
 
         //Initialize presenter
         mPresenter = ProfileFragmentPresenter(activity!!, this)
-        mPresenter.onSettingProfile()
+        mPresenter.setupProfile()
 
         setupLogoutButton()
 
@@ -79,8 +75,20 @@ class ProfileFragment(
         }
 
         btn_save.onClick {
+            progressDialog?.show()
+
             setEditable(false)
             layoutAnimation?.toggle()
+
+            mPresenter.updateData(
+                edt_username.text.toString(),
+                edt_gender.text.toString(),
+                edt_phone_number.text.toString()
+            )
+        }
+
+        edt_gender.onClick {
+            BottomDialogGenderChooserFragment(edt_gender).show(fragmentManager!!, "dialog")
         }
 
         btn_cancel.onClick {
@@ -91,8 +99,14 @@ class ProfileFragment(
     }
 
     private fun setEditable(boolean: Boolean){
-        arrayOf(edt_username,edt_email, edt_gender, edt_phone_number).forEach {
-            it.isEnabled = boolean
+        if(boolean){
+            arrayOf(edt_username, edt_gender, edt_phone_number).forEach {
+                it.isEnabled = boolean
+            }
+        }else{
+            arrayOf(edt_username, edt_gender, edt_email, edt_phone_number).forEach {
+                it.isEnabled = boolean
+            }
         }
     }
 
@@ -204,9 +218,29 @@ class ProfileFragment(
         showFirebaseError(context!!, message)
     }
 
+    override fun onProfileUpdateSuccessfully() {
+        mPresenter.setupProfile()
+        progressDialog?.dismiss()
+        showToastByString(context!!, "Update Successfully!")
+    }
+
+    override fun onProfileUpdateFailed() {
+        progressDialog?.dismiss()
+        showToastByString(context!!, getString(R.string.general_failed_message))
+    }
+
     override fun internetError() {
         progressDialog?.dismiss()
         showInternetErrorDialog(context!!)
+    }
+
+    override fun onBackPressed(): Boolean {
+        return if(layoutAnimation?.isVisible!!){
+            layoutAnimation?.toggle()
+            true
+        }else {
+            false
+        }
     }
 
 }

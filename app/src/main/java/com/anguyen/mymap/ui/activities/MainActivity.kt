@@ -2,7 +2,6 @@ package com.anguyen.mymap.ui.activities
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.anguyen.mymap.adapters.viewpager.MainFragmentPagerAdapter
@@ -90,6 +89,16 @@ class MainActivity : AppCompatActivity(), MainView,  ViewPager.OnPageChangeListe
             mPresenter.deleteCurrentGuest()
         }
         super.onStop()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        //Set BackPress for fragment
+        val fragment = supportFragmentManager.findFragmentById(R.id.view_container)
+        (fragment as IOnBackPressed).onBackPressed().not().let {
+            super.onBackPressed()
+        }
     }
 
     override fun onDestroy() {
